@@ -1,9 +1,8 @@
+/* eslint-disable no-unused-vars */
 const res = require('express/lib/response');
-const { resume } = require('../helpers/db');
 const vehicleModel = require('../models/vehicles');
 const vehicles = require('../routes/vehicles');
 
-const db = require('../helpers/db');
 
 const getVehicles =  (req,res) =>{
 	vehicleModel.getVehicles(results =>{
@@ -53,11 +52,10 @@ const postVehicle = (req,res) =>{
 		isAvailable : req.body.isAvailable
 	};
     
-	vehicleModel.postVehicle(data, res =>{
-		return res.send ({
+	vehicleModel.postVehicle(data, (results) =>{
+		return res.send({
 			success : true,
 			message : 'Vehicle has been inserted',
-			results : res
 		});
 	});
 };
@@ -70,10 +68,11 @@ const patchVehicle = (req,res) =>{
 		price : req.body.price,
 		isAvailable : req.body.isAvailable
 	};
-	vehicleModel.patchVehicle(id,data,res =>{
+	vehicleModel.patchVehicle(id,data,results =>{
 		return res.send({
 			success : true,
-			message : 'Data has been update'
+			message : 'Data has been update',
+			results
 		});
 	});
     

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const db = require('../helpers/db');
 
 
@@ -24,7 +25,7 @@ exports.deleteVehicle = (id,cb) =>{
 
 exports.postVehicle = (data,cb) =>{
 	let sql = `INSERT INTO vehicles (name, color, price, isAvailable) 
-    VALUES (${data.name}, ${data.color}, ${data.price}, ${data.isAvailable})`;
+    VALUES ('${data.name}', '${data.color}', ${data.price}, ${data.isAvailable})`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
@@ -32,7 +33,9 @@ exports.postVehicle = (data,cb) =>{
 };
 
 exports.patchVehicle = (id, data, cb) =>{
-	db.query(`UPDATE vehicles SET name=? , color=?, price=?, isAvailable=? WHERE ${id}`, [data.name, data.color, data.price, data.isAvailable] ,(err,res) =>{
+	let sql = `UPDATE vehicles 
+	SET name = '${data.name}' , color =  '${data.color}', price = ${data.price}, isAvailable = ${data.isAvailable} WHERE ${id}`;
+	db.query(sql,(err,res) =>{
 		if(err) throw err;
 		cb(res);
 	});
