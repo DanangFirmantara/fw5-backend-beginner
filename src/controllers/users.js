@@ -17,7 +17,7 @@ const getUser = (req, res) =>{
 	usersModel.getUser(id, results =>{
 		return res.json({
 			success : true,
-			message : `List user from id ${id}`,
+			message : 'Data found',
 			results : results[0]
 		});
 	});
@@ -41,4 +41,22 @@ const postUsers = (req, res)=>{
 	});
 };
 
-module.exports = {getUsers, getUser, postUsers};
+const deleteUser = (req, res)=>{
+	const {id} = req.params;
+
+	usersModel.deleteUser(id, results =>{
+		if(results == null){
+			return res.status(404).json({
+				success : false,
+				message : 'Delete Error'
+			});
+		} 
+	});
+
+	return res.json({
+		success : true,
+		message : 'Data has been deleted'
+	});
+};
+
+module.exports = {getUsers, getUser, postUsers, deleteUser};

@@ -43,3 +43,13 @@ exports.postUser = (data, cb) =>{
 		cb(res);
 	});
 };
+
+exports.deleteUser = (id, cb) =>{
+	let sql = `DELETE FROM users
+    WHERE
+        id =${id}`;
+	db.query(sql,(err, res) =>{
+		if(err) throw err;
+		cb(res);
+	});
+};
