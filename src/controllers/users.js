@@ -59,4 +59,24 @@ const deleteUser = (req, res)=>{
 	});
 };
 
-module.exports = {getUsers, getUser, postUsers, deleteUser};
+
+const patchUser = (req, res) =>{
+	const {id} = req.params;
+	let data = {
+		fullName : req.body.fullName,
+		gender : req.body.gender,
+		email : req.body.email,
+		address : req.body.address,
+		contact : req.body.contact,
+		displayName : req.body.displayName,
+		birtDate : req.body.birtDate
+	};
+	usersModel.patchUser(id, data, results =>{
+		return res.json({
+			success : true,
+			message : 'Data has been updated',
+			results : results[0]
+		});
+	});
+};
+module.exports = {getUsers, getUser, postUsers, deleteUser, patchUser};

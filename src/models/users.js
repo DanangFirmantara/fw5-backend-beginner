@@ -53,3 +53,22 @@ exports.deleteUser = (id, cb) =>{
 		cb(res);
 	});
 };
+
+exports.patchUser = (id, data, cb) =>{
+	let sql = `UPDATE users
+    SET
+        fullName = '${data.fullName}',
+        gender = ${data.gender},
+        email = '${data.email}',
+        address = '${data.address}',
+        contact = '${data.contact}',
+        displayName = '${data.displayName}',
+        birthDate = '${data.birthDate}'
+    WHERE
+        id = ${id}`;
+
+	db.query(sql, (err, res) =>{
+		if (err) throw err;
+		cb (res);
+	});
+};
