@@ -8,3 +8,13 @@ exports.getUsers = (cb)=>{
 		cb(res);
 	});
 };
+
+exports.getUser = (id, cb) =>{
+	let sql = `SELECT * FROM users
+    WHERE
+        id=${id}`;
+	db.query (sql, (err, res) =>{
+		if (err) throw err;
+		cb(res);
+	});
+};
