@@ -24,9 +24,20 @@ const getUser = (req, res) =>{
 };
 
 const postUsers = (req, res)=>{
-	return res.json({
-		success : true,
-		message : 'Users has been inserted'
+	let data = {
+		fullName : req.body.fullName,
+		gender : req.body.gender,
+		email : req.body.email,
+		address : req.body.address,
+		contact : req.body.contact,
+		displayName : req.body.displayName,
+		birtDate : req.body.birtDate
+	};
+	usersModel.postUser(data, (results) =>{
+		return res.json({
+			success : true,
+			message : 'users has been inserted'
+		});
 	});
 };
 
