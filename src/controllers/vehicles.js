@@ -47,9 +47,12 @@ const deleteVehicle = (req,res)=>{
 const postVehicle = (req,res) =>{
 	let data = {
 		name : req.body.name,
-		color : req.body.color,
+		location : req.body.location,
+		description : req.body.description,
 		price : req.body.price,
-		isAvailable : req.body.isAvailable
+		status : req.body.status,
+		stock : req.body.stock,
+		image : req.body.image
 	};
     
 	vehicleModel.postVehicle(data, (results) =>{
@@ -64,9 +67,12 @@ const patchVehicle = (req,res) =>{
 	const {id} = req.params;
 	let data = {
 		name : req.body.name,
-		color : req.body.color,
+		location : req.body.location,
+		description : req.body.description,
 		price : req.body.price,
-		isAvailable : req.body.isAvailable
+		status : req.body.status,
+		stock : req.body.stock,
+		image : req.body.image
 	};
 	vehicleModel.patchVehicle(id,data,results =>{
 		return res.send({

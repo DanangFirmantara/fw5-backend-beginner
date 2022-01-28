@@ -130,4 +130,7 @@ dist
 .pnp.*
 
 #manual
-manual/
+manual/*
+
+#progress
+progress/*

@@ -33,15 +33,21 @@ exports.deleteVehicle = (id,cb) =>{
 exports.postVehicle = (data,cb) =>{
 	let sql = `INSERT INTO vehicles (
 		name, 
-		color, 
-		price, 
-		isAvailable
+		location,
+		description,
+		price,
+		status,
+		stock,
+		image
 	) 
     VALUES (
 		'${data.name}', 
-		'${data.color}', 
-		${data.price}, 
-		${data.isAvailable}
+		'${data.location}',
+		'${data.description}',
+		${data.price},
+		${data.status},
+		${data.stock},
+		'${data.image}'
 	)`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
@@ -52,10 +58,13 @@ exports.postVehicle = (data,cb) =>{
 exports.patchVehicle = (id, data, cb) =>{
 	let sql = `UPDATE vehicles 
 	SET 
-		name = '${data.name}' ,
-		color =  '${data.color}', 
-		price = ${data.price}, 
-		isAvailable = ${data.isAvailable} 
+		name = '${data.name}', 
+		location = '${data.location}',
+		description = '${data.description}',
+		price = ${data.price},
+		status = ${data.status},
+		stock = ${data.stock},
+		image = '${data.image}'
 	WHERE 
 		${id}`;
 
