@@ -1,7 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { DATETIME } = require('mysql/lib/protocol/constants/types');
 const usersModel = require('../models/users');
-const users = require('../routes/users');
 
 const getUsers = (req, res) =>{
 	usersModel.getUsers (results =>{
@@ -25,9 +23,6 @@ const getUser = (req, res) =>{
 };
 
 const postUsers = (req, res)=>{
-	var htdate = new Date(req.body.birtDate);
-	console.log(htdate);
-
 	let data = {
 		fullName : req.body.fullName,
 		gender : req.body.gender,

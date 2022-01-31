@@ -23,10 +23,10 @@ exports.getVehicle = (id, cb) =>{
 exports.deleteVehicle = (id,cb) =>{
 	let sql = `DELETE FROM vehicles
 	 WHERE 
-	 	id=${id}`;
-	db.query(sql, (err,res) =>{
+	 	id=?`;
+	db.query(sql,[id], (err,res) =>{
 		if (err) throw err;
-		cb();
+		cb(res);
 	});
 };
 
@@ -66,10 +66,17 @@ exports.patchVehicle = (id, data, cb) =>{
 		stock = ${data.stock},
 		image = '${data.image}'
 	WHERE 
-		${id}`;
-
+		id = ${id}`;
 	db.query(sql,(err,res) =>{
 		if(err) throw err;
+		cb(res);
+	});
+};
+
+exports.searchVehicles = (data,cb)=>{
+	let sql = `SELECT name, location FROM vehicles WHERE name like '%${data.name}%' AND location LIKE '${data.location}%'`;
+	db.query(sql, (err,res) =>{
+		if (err) throw err;
 		cb(res);
 	});
 };

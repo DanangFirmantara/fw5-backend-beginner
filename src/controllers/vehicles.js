@@ -3,17 +3,26 @@ const res = require('express/lib/response');
 const vehicleModel = require('../models/vehicles');
 const vehicles = require('../routes/vehicles');
 
-
+// get vehicles succes error handling
 const getVehicles =  (req,res) =>{
 	vehicleModel.getVehicles(results =>{
-		return res.json({
-			success : true,
-			message : 'List vehicles',
-			results : results
-		});
+		if(results.length > 0){
+			return res.json({
+				success : true,
+				message : 'List vehicles',
+				results : results
+			});
+		} else {
+			return res.status(404).json({
+				success : false,
+				message : 'Data Not Found'
+			});
+		}
+		
 	});
 };
 
+//error handling success
 const getVehicle = (req,res) =>{
 	const {id} = req.params;
 	vehicleModel.getVehicle(id, results =>{
@@ -34,12 +43,24 @@ const getVehicle = (req,res) =>{
    
 };
 
+// error handling success except 1 condition when the id is null
 const deleteVehicle = (req,res)=>{
 	const {id} = req.params;
-	vehicleModel.deleteVehicle(id,()=>{
-		return res.send({
-			success : true,
-			message : 'Deleted sucess'
+	vehicleModel.getVehicle(id,(result) =>{
+		vehicleModel.deleteVehicle(id,(results)=>{
+			if(results.affectedRows > 0){
+				return res.send({
+					success : true,
+					message : `Data from id ${id} Succesfully deleted `,
+					results : result[0]
+				});
+			} else {
+				return res.status(404).send({
+					success : false,
+					message : 'Deleted Failed'
+				});
+			}
+			
 		});
 	});
 };
@@ -54,15 +75,26 @@ const postVehicle = (req,res) =>{
 		stock : req.body.stock,
 		image : req.body.image
 	};
-    
-	vehicleModel.postVehicle(data, (results) =>{
-		return res.send({
-			success : true,
-			message : 'Vehicle has been inserted',
-		});
+	vehicleModel.searchVehicles(data, results =>{
+		console.log(results.length);
+		console.log(data);
+		if (results.length <= 0){
+			vehicleModel.postVehicle(data, result =>{
+				return res.send({
+					success : true,
+					message : 'Insert Successfully'
+				});
+			});
+		} else {
+			return res.status(400).send({
+				success : false,
+				message : 'insert failed'
+			});
+		}
 	});
 };
 
+//update success handling error
 const patchVehicle = (req,res) =>{
 	const {id} = req.params;
 	let data = {
@@ -74,12 +106,30 @@ const patchVehicle = (req,res) =>{
 		stock : req.body.stock,
 		image : req.body.image
 	};
-	vehicleModel.patchVehicle(id,data,results =>{
-		return res.send({
-			success : true,
-			message : 'Data has been update',
-			results
-		});
+	vehicleModel.getVehicle(id,results =>{
+		if (results[0]){
+			vehicleModel.searchVehicles(data,result =>{
+				if (result.length <= 0){
+					vehicleModel.patchVehicle(id,data,resu =>{
+						return res.send({
+							success : true,
+							message : 'Data has been update',
+							results : data
+						});
+					});
+				} else {
+					return res.status(400).send({
+						success : false,
+						message : 'updated failed'
+					});
+				}
+			});
+		} else {
+			return res.status(404).send({
+				success : false,
+				message : 'Data not found'
+			});
+		}
 	});
     
 };
