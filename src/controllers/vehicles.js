@@ -57,14 +57,16 @@ const postVehicle = (req,res) =>{
 		price : req.body.price,
 		status : req.body.status,
 		stock : req.body.stock,
-		image : req.body.image
+		image : req.body.image,
+		type : req.body.type
 	};
 	vehicleModel.searchVehicles(data, results =>{
 		if (results.length <= 0){
 			vehicleModel.postVehicle(data, result =>{
 				return res.send({
 					success : true,
-					message : 'Insert Successfully'
+					message : 'Insert Successfully',
+					results : {data}
 				});
 			});
 		} else {
@@ -86,13 +88,16 @@ const patchVehicle = (req,res) =>{
 		price : req.body.price,
 		status : req.body.status,
 		stock : req.body.stock,
-		image : req.body.image
+		image : req.body.image,
+		type : req.body.type
 	};
 	id = parseInt(id) || 0;
 	vehicleModel.getVehicle(id,results =>{
-		if (results[0]){
+		console.log(results.length);
+		if (results.length > 0){
 			vehicleModel.searchVehicles(data,result =>{
-				if (result.length <= 0){
+				console.log(result[0].id);
+				if (result[0].id == id){
 					vehicleModel.patchVehicle(id,data,resu =>{
 						return res.send({
 							success : true,

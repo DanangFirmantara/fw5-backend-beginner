@@ -3,7 +3,7 @@ const db = require('../helpers/db');
 
 
 exports.getVehicles = (data, cb)=>{
-	let sql = `SELECT id, name, price, description, status, location, stock FROM vehicles WHERE name LIKE '%${data.search}%' AND id LIKE '%${data.id}%'`;
+	let sql = `SELECT id, name, price, description, type, status, location, stock FROM vehicles WHERE name LIKE '%${data.search}%' AND id LIKE '%${data.id}%'`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
@@ -35,16 +35,18 @@ exports.postVehicle = (data,cb) =>{
 		price,
 		status,
 		stock,
-		image
+		image,
+		type
 	) 
     VALUES (
 		'${data.name}', 
 		'${data.location}',
 		'${data.description}',
 		${data.price},
-		${data.status},
+		'${data.status}',
 		${data.stock},
-		'${data.image}'
+		'${data.image}',
+		'${data.type}'
 	)`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
@@ -59,9 +61,10 @@ exports.patchVehicle = (id, data, cb) =>{
 		location = '${data.location}',
 		description = '${data.description}',
 		price = ${data.price},
-		status = ${data.status},
+		status = '${data.status}',
 		stock = ${data.stock},
-		image = '${data.image}'
+		image = '${data.image}',
+		type = '${data.type}'
 	WHERE 
 		id = ${id}`;
 	db.query(sql,(err,res) =>{
@@ -71,7 +74,7 @@ exports.patchVehicle = (id, data, cb) =>{
 };
 
 exports.searchVehicles = (data,cb)=>{
-	let sql = `SELECT name, location FROM vehicles WHERE name LIKE '%${data.name}%' AND location LIKE '${data.location}%'`;
+	let sql = `SELECT id, name, location FROM vehicles WHERE name LIKE '%${data.name}%' AND location LIKE '${data.location}%'`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
