@@ -2,8 +2,8 @@
 const db = require('../helpers/db');
 
 
-exports.getVehicles = (cb)=>{
-	let sql = 'SELECT * FROM vehicles';
+exports.getVehicles = (data, cb)=>{
+	let sql = `SELECT id, name, price, description, status, location, stock FROM vehicles WHERE name LIKE '%${data.search}%' AND id LIKE '%${data.id}%'`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
@@ -11,16 +11,13 @@ exports.getVehicles = (cb)=>{
 };
 
 exports.getVehicle = (id, cb) =>{
-	let sql = `SELECT * FROM vehicles
-	 WHERE 
-	 	id=${id}`;
-	db.query(sql, (err,res) =>{
-		if(err) throw err;
+	db.query ('SELECT id, name, price, description, status, location, stock FROM vehicles WHERE id = ?', [id],(err,res) =>{
+		if (err) throw err;
 		cb(res);
 	});
 };
 
-exports.deleteVehicle = (id,cb) =>{
+exports.deleteVehicle = (id ,cb) =>{
 	let sql = `DELETE FROM vehicles
 	 WHERE 
 	 	id=?`;

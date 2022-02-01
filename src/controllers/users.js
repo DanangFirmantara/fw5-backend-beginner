@@ -3,7 +3,11 @@ const usersModel = require('../models/users');
 
 // error handling success
 const getUsers = (req, res) =>{
-	usersModel.getUsers (results =>{
+	let {username, id} = req.query;
+	username = username || '';
+	id = parseInt(id) || '';
+	let data = {id, username};
+	usersModel.getUsers (data, results =>{
 		if (results.length > 0){
 			return res.json({
 				success : true,
@@ -18,56 +22,34 @@ const getUsers = (req, res) =>{
 		}	
 	});
 };
-
-// error handling completed
-const getUser = (req, res) =>{
-	const {id} = req.params;
-	usersModel.getUser(id, results =>{
-		if (results.length > 0){
-			return res.json({
-				success : true,
-				message : 'Detail user',
-				results : results[0]
-			});
-		} else {
-			return res.status(404).json({
-				success : false,
-				message : 'Data not found'
-			});
-		}
-	});
-};
-
 // postuser has been updated. handling error completed
+// hanya bisa melakukan sign up
 const postUsers = (req, res)=>{
 	let data = {
-		fullName : req.body.fullName,
-		gender : req.body.gender,
-		email : req.body.email,
-		address : req.body.address,
+		username : req.body.username,
 		contact : req.body.contact,
-		displayName : req.body.displayName,
-		birthDate : req.body.birthDate
+		email : req.body.email,
+		password : req.body.password
 	};
 	usersModel.searchUser(data, result =>{
+		console.log(result.length);
 		if(result.length <= 0){
-			usersModel.postUser(data, (results) =>{
-				return res.json({
+			usersModel.postUser(data, results=>{
+				return res.send({
 					success : true,
-					message : 'users has been inserted',
-					results : { id : results.insertId, data }
+					message : 'insert successfully',
+					results : {id : results.insertId, data}
 				});
 			});
 		} else {
-			return res.status(404).send({
+			return res.status(400).send({
 				success : false,
-				message : 'insert failed'
+				message : 'Insert failed'
 			});
 		}
 	});
 };
 
-//handling error for delete completed
 const deleteUser = (req, res)=>{
 	const {id} = req.params;
 	usersModel.getUser(id, result=>{
@@ -90,7 +72,7 @@ const deleteUser = (req, res)=>{
 
 //update handling error completed.
 const patchUser = (req, res) =>{
-	const {id} = req.params;
+	let {username, email, contact} = req.query;
 	let data = {
 		fullName : req.body.fullName,
 		gender : req.body.gender,
@@ -100,30 +82,27 @@ const patchUser = (req, res) =>{
 		displayName : req.body.displayName,
 		birthDate : req.body.birthDate
 	};
-	usersModel.getUser(id, result =>{
-		if (result.length > 0){
-			usersModel.searchUser(data, results =>{
-				if (results.length <= 0){
-					usersModel.patchUser(id, data, resu =>{
-						return res.json({
-							success : true,
-							message : 'Data has been updated',
-							results : {id : id, data}
-						});
-					});
-				} else {
-					return res.status(400).send ({
-						success : false,
-						message : 'Bad Request'
-					});
-				}
+	username = username || '';
+	email = email || '';
+	contact = contact || '';
+	let datas = {username, email, contact};
+	usersModel.searchUser(datas, result=>{
+		console.log(result.length);
+		if(result.length > 0){
+			usersModel.patchUser(result[0].id , data, results =>{
+				return res.send({
+					success : true,
+					message : 'Data has been updated',
+					results : {id : result[0].id , data}
+				});
 			});
-		}else {
-			return res.status(404).send({
+		} else {
+			return res.status(404).send ({
 				success : false,
-				message : 'Data not found'
+				message : 'data not found'
 			});
 		}
-	});
+	})
+	;
 };
-module.exports = {getUsers, getUser, postUsers, deleteUser, patchUser};
+module.exports = {getUsers, postUsers, deleteUser, patchUser};

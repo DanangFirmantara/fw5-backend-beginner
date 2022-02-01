@@ -1,11 +1,14 @@
 /* eslint-disable no-unused-vars */
-const res = require('express/lib/response');
 const vehicleModel = require('../models/vehicles');
-const vehicles = require('../routes/vehicles');
+
 
 // get vehicles succes error handling
 const getVehicles =  (req,res) =>{
-	vehicleModel.getVehicles(results =>{
+	let {search,id} = req.query;
+	search = search || '';
+	id = parseInt(id) || '';
+	let data = {search, id};
+	vehicleModel.getVehicles(data ,results =>{
 		if(results.length > 0){
 			return res.json({
 				success : true,
@@ -21,32 +24,13 @@ const getVehicles =  (req,res) =>{
 		
 	});
 };
-
-//error handling success
-const getVehicle = (req,res) =>{
-	const {id} = req.params;
-	vehicleModel.getVehicle(id, results =>{
-		if (results.length > 0){
-			return res.send ({
-				success : true,
-				message : 'Detail vehicle',
-				results : results[0]
-			});
-		}
-		else {
-			return res.status(404).send({
-				success : false,
-				message : 'Vehicle not found'
-			});
-		}
-	});
-   
-};
-
 // error handling success except 1 condition when the id is null
 const deleteVehicle = (req,res)=>{
-	let {id} = req.params;
-	vehicleModel.getVehicle(id,(result) =>{
+	let {id,search} = req.query;
+	id = parseInt(id) || 0;
+	search = search || '';
+	let data = {id, search};
+	vehicleModel.getVehicles(data,(result) =>{
 		vehicleModel.deleteVehicle(id,(results)=>{
 			if(results.affectedRows > 0){
 				return res.send({
@@ -57,7 +41,7 @@ const deleteVehicle = (req,res)=>{
 			} else {
 				return res.status(404).send({
 					success : false,
-					message : 'Deleted Failed'
+					message : 'Data not found'
 				});
 			}
 			
@@ -94,7 +78,7 @@ const postVehicle = (req,res) =>{
 
 //update success handling error
 const patchVehicle = (req,res) =>{
-	const {id} = req.params;
+	let {id} = req.query;
 	let data = {
 		name : req.body.name,
 		location : req.body.location,
@@ -104,6 +88,7 @@ const patchVehicle = (req,res) =>{
 		stock : req.body.stock,
 		image : req.body.image
 	};
+	id = parseInt(id) || 0;
 	vehicleModel.getVehicle(id,results =>{
 		if (results[0]){
 			vehicleModel.searchVehicles(data,result =>{
@@ -132,4 +117,5 @@ const patchVehicle = (req,res) =>{
     
 };
 
-module.exports = {getVehicles, getVehicle, deleteVehicle, postVehicle, patchVehicle};
+
+module.exports = {getVehicles, deleteVehicle, postVehicle, patchVehicle};

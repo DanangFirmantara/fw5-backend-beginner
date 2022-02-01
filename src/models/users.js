@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 const db = require('../helpers/db');
 
-exports.getUsers = (cb)=>{
-	let sql = 'SELECT * FROM users';
-	db.query(sql, (err,res) =>{
+exports.getUsers = (data, cb)=>{
+	let result = db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'`, (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
+	console.log(result.sql);
 };
 
 exports.getUser = (id, cb) =>{
@@ -20,17 +20,7 @@ exports.getUser = (id, cb) =>{
 };
 
 exports.postUser = (data, cb) =>{
-	let sql = `INSERT INTO users (
-        fullName,
-        gender,
-        email,
-        address,
-        contact,
-        displayName,
-        birthDate
-    ) 
-    VALUE (?,?,?,?,?,?,?)`;
-	let results = db.query(sql,[data.fullName, data.gender, data.email, data.address, data.contact, data.displayName, data.birthDate], (err,res) =>{
+	let results = db.query('INSERT INTO users (username, email, contact, password) VALUE (?,?,?,?)',[data.username, data.email, data.contact, data.password], (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
@@ -56,18 +46,18 @@ exports.patchUser = (id, data, cb) =>{
         address = '${data.address}',
         contact = '${data.contact}',
         displayName = '${data.displayName}',
-        birthDate = '${data.birthDate}'
+        birthDate = ?
     WHERE
         id = ${id}`;
 
-	db.query(sql, (err, res) =>{
+	db.query(sql,[data.birthDate], (err, res) =>{
 		if (err) throw err;
 		cb (res);
 	});
 };
 
 exports.searchUser = (data,cb)=>{
-	let sql = `SELECT fullName, birthDate, gender FROM users WHERE fullName LIKE '%${data.fullName}%' AND birthDate LIKE '${data.birthDate}%' AND gender LIKE '${data.gender}%'`;
+	let sql = `SELECT id, fullName, birthDate, gender FROM users WHERE username = '${data.username}' OR email ='${data.email}' OR contact = '${data.contact}'`;
 	let results = db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
