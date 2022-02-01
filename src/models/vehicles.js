@@ -74,7 +74,7 @@ exports.patchVehicle = (id, data, cb) =>{
 };
 
 exports.searchVehicles = (data,cb)=>{
-	let sql = `SELECT name, location FROM vehicles WHERE name like '%${data.name}%' AND location LIKE '${data.location}%'`;
+	let sql = `SELECT name, location FROM vehicles WHERE name LIKE '%${data.name}%' AND location LIKE '${data.location}%'`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);

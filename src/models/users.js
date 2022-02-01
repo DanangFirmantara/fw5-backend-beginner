@@ -29,19 +29,12 @@ exports.postUser = (data, cb) =>{
         displayName,
         birthDate
     ) 
-    VALUE (
-        '${data.fullName}',
-        ${data.gender},
-        '${data.email}',
-        '${data.address}',
-        '${data.contact}',
-        '${data.displayName}',
-        '${data.birthDate}'
-    )`;
-	db.query(sql, (err,res) =>{
+    VALUE (?,?,?,?,?,?,?)`;
+	let results = db.query(sql,[data.fullName, data.gender, data.email, data.address, data.contact, data.displayName, data.birthDate], (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
+	console.log(results.sql);
 };
 
 exports.deleteUser = (id, cb) =>{
@@ -71,4 +64,13 @@ exports.patchUser = (id, data, cb) =>{
 		if (err) throw err;
 		cb (res);
 	});
+};
+
+exports.searchUser = (data,cb)=>{
+	let sql = `SELECT fullName, birthDate, gender FROM users WHERE fullName LIKE '%${data.fullName}%' AND birthDate LIKE '${data.birthDate}%' AND gender LIKE '${data.gender}%'`;
+	let results = db.query(sql, (err,res) =>{
+		if (err) throw err;
+		cb(res);
+	});
+	console.log(results.sql);
 };

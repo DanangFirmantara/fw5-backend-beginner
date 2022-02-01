@@ -45,7 +45,7 @@ const getVehicle = (req,res) =>{
 
 // error handling success except 1 condition when the id is null
 const deleteVehicle = (req,res)=>{
-	const {id} = req.params;
+	let {id} = req.params;
 	vehicleModel.getVehicle(id,(result) =>{
 		vehicleModel.deleteVehicle(id,(results)=>{
 			if(results.affectedRows > 0){
@@ -76,8 +76,6 @@ const postVehicle = (req,res) =>{
 		image : req.body.image
 	};
 	vehicleModel.searchVehicles(data, results =>{
-		console.log(results.length);
-		console.log(data);
 		if (results.length <= 0){
 			vehicleModel.postVehicle(data, result =>{
 				return res.send({
