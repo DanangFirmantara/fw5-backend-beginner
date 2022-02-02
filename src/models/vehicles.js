@@ -63,8 +63,7 @@ exports.patchVehicle = (id, data, cb) =>{
 		price = ${data.price},
 		status = '${data.status}',
 		stock = ${data.stock},
-		image = '${data.image}',
-		type = '${data.type}'
+		image = '${data.image}'
 	WHERE 
 		id = ${id}`;
 	db.query(sql,(err,res) =>{

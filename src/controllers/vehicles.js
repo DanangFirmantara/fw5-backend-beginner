@@ -89,14 +89,11 @@ const patchVehicle = (req,res) =>{
 		status : req.body.status,
 		stock : req.body.stock,
 		image : req.body.image,
-		type : req.body.type
 	};
 	id = parseInt(id) || 0;
 	vehicleModel.getVehicle(id,results =>{
-		console.log(results.length);
 		if (results.length > 0){
 			vehicleModel.searchVehicles(data,result =>{
-				console.log(result[0].id);
 				if (result[0].id == id){
 					vehicleModel.patchVehicle(id,data,resu =>{
 						return res.send({

@@ -86,4 +86,34 @@ const deleteHistory = (req, res) =>{
 	});
 };
 
-module.exports = {getHistory, postHistory, deleteHistory};
+const patchHistory = (req, res) =>{
+	let {quantity} = req.body;
+	let {id} = req.query;
+	let data = {id, quantity};
+	historyModel.getHistory(id, result =>{
+		if(result.length > 0){
+			if (result[0].quantity > 0){
+				historyModel.patchHistory(data, result =>{
+					return res.send({
+						success : true,
+						message : 'Updated successfully'
+					});
+				});
+			}else {
+				return res.status(400).send({
+					success : false,
+					message : 'You prohibited update your data. Bad request'
+				});
+			}
+			
+		} else {
+			return res.status(404).send({
+				success : false,
+				message : 'Data not found'
+			});
+		}
+	});
+	
+};
+
+module.exports = {getHistory, postHistory, deleteHistory, patchHistory};

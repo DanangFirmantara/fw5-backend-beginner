@@ -27,3 +27,10 @@ exports.deleteHistory = (id, cb) =>{
 		cb (res);
 	});
 };
+
+exports.patchHistory = (data, cb) =>{
+	db.query('UPDATE histories SET quantity = ? WHERE id = ', [data.quantity, data.id], (err, res) =>{
+		if (err) throw err;
+		cb (res);
+	});
+};
