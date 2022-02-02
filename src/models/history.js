@@ -6,3 +6,10 @@ exports.getHistory = (id, cb) =>{
 		cb(res);
 	});
 };
+
+exports.postHistory = (data, cb) =>{
+	db.query('INSERT INTO histories (rentStartDate, rentEndDate, prepayment, userId, vehicleId, quantity) VALUES (?,?,?,?,?,?)', [data.rentStartDate, data.rentEndDate, data.prepayment, data.userId, data.vehicleId, data.quantity], (err, res) =>{
+		if(err) throw err;
+		cb(res);
+	});
+};

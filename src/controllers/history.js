@@ -1,4 +1,6 @@
 const historyModel = require ('../models/history');
+const usersModel = require ('../models/users');
+const vehicleModel = require ('../models/vehicles');
 
 const getHistory = (req, res) =>{
 	let {id} = req.query;
@@ -20,4 +22,47 @@ const getHistory = (req, res) =>{
 	});
 };
 
-module.exports = {getHistory};
+//postHistory completed with handling error
+const postHistory = (req, res) =>{
+	let {rentStartDate, rentEndDate, prepayment, userId, vehicleId, quantity} = req.body;
+	let data = {rentStartDate, rentEndDate, prepayment, userId, vehicleId, quantity};
+	usersModel.getUser(userId, resultU =>{
+		if (resultU.length > 0){
+			vehicleModel.getVehicle(vehicleId, resultV =>{
+				if(resultV.length > 0) {
+					if(parseInt(data.quantity) <= resultV[0].stock){
+						historyModel.postHistory(data, results =>{
+							return res.send({
+								success : true,
+								message : 'Insert history successfully',
+								results : {id : results.insertId, data}
+							});
+						});
+					} else if (resultV[0].stock > 0) {
+						return res.status(400).send({
+							success : false,
+							message : `Sorry our stock just ${resultV[0].stock} left`
+						});
+					} else {
+						return res.status(400).send({
+							success : false,
+							message : 'Vehicle full booked'
+						});
+					}
+				} else {
+					return res.status(404).send({
+						success : false,
+						message : 'Data vehicleId not found'
+					});
+				}
+			});
+		} else {
+			return res.status(404).send({
+				success : false,
+				message : 'Data userId not found'
+			});
+		}
+	});
+};
+
+module.exports = {getHistory, postHistory};
