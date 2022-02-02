@@ -3,7 +3,7 @@ const db = require('../helpers/db');
 
 
 exports.getVehicles = (data, cb)=>{
-	let sql = `SELECT id, name, price, description, type, status, location, stock FROM vehicles WHERE name LIKE '%${data.search}%' AND id LIKE '%${data.id}%'`;
+	let sql = `SELECT id, name, price, description, status, location, stock FROM vehicles WHERE name LIKE '%${data.search}%' AND id LIKE '%${data.id}%'`;
 	db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
