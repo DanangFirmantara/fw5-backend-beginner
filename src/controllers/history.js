@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const historyModel = require ('../models/history');
 const usersModel = require ('../models/users');
 const vehicleModel = require ('../models/vehicles');
@@ -6,7 +7,7 @@ const getHistory = (req, res) =>{
 	let {id} = req.query;
 	id = parseInt(id) || '';
 	console.log(id);
-	historyModel.getHistory(id, results=>{
+	historyModel.getHistories(id, results=>{
 		if(results.length > 0){
 			return res.send({
 				success : true,
@@ -65,4 +66,24 @@ const postHistory = (req, res) =>{
 	});
 };
 
-module.exports = {getHistory, postHistory};
+const deleteHistory = (req, res) =>{
+	let {id} = req.query;
+	historyModel.getHistory(id, result =>{
+		if (result.length > 0){
+			historyModel.deleteHistory(id, results =>{
+				return res.send({
+					success : true,
+					message : 'Deleted successfully',
+					results : result[0]
+				});
+			});
+		} else {
+			return res.status(404).send({
+				success : false,
+				message : 'Data not found'
+			});
+		}
+	});
+};
+
+module.exports = {getHistory, postHistory, deleteHistory};
