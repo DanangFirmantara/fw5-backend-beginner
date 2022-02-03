@@ -4,10 +4,11 @@ const vehicleModel = require('../models/vehicles');
 
 // get vehicles succes error handling
 const getVehicles =  (req,res) =>{
-	let {search,id} = req.query;
-	search = search || '';
+	let {name,id, location} = req.query;
+	name = name || '';
 	id = parseInt(id) || '';
-	let data = {search, id};
+	location = location || '';
+	let data = {name, id, location};
 	vehicleModel.getVehicles(data ,results =>{
 		if(results.length > 0){
 			return res.json({
@@ -58,7 +59,7 @@ const postVehicle = (req,res) =>{
 		status : req.body.status,
 		stock : req.body.stock,
 		image : req.body.image,
-		type : req.body.type
+		category : req.body.category
 	};
 	vehicleModel.searchVehicles(data, results =>{
 		if (results.length <= 0){
