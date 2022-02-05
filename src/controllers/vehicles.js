@@ -29,24 +29,22 @@ const getVehicles =  (req,res) =>{
 const deleteVehicle = (req,res)=>{
 	let {id,search} = req.query;
 	id = parseInt(id) || 0;
-	search = search || '';
-	let data = {id, search};
-	vehicleModel.getVehicles(data,(result) =>{
-		vehicleModel.deleteVehicle(id,(results)=>{
-			if(results.affectedRows > 0){
+	vehicleModel.getVehicle(id,(result) =>{
+		if (result.length > 0){
+			vehicleModel.deleteVehicle(id,(results)=>{
 				return res.send({
 					success : true,
 					message : `Data from id ${id} Succesfully deleted `,
 					results : result[0]
 				});
-			} else {
-				return res.status(404).send({
-					success : false,
-					message : 'Data not found'
-				});
-			}
-			
-		});
+			});
+		} else {
+			return res.status(404).send({
+				success : false,
+				message : 'Data not found'
+			});
+		}
+		
 	});
 };
 
@@ -90,6 +88,7 @@ const patchVehicle = (req,res) =>{
 		status : req.body.status,
 		stock : req.body.stock,
 		image : req.body.image,
+		category : req.body.category
 	};
 	id = parseInt(id) || 0;
 	vehicleModel.getVehicle(id,results =>{
