@@ -6,7 +6,7 @@ const getList = (req, res) =>{
 		if (results.length > 0){
 			return res.send({
 				success : true,
-				message : 'Detail vehicle',
+				message : 'List vehicle',
 				results : results
 			});
 		} else {
