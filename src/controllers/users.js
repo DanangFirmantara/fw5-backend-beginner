@@ -32,7 +32,6 @@ const postUsers = (req, res)=>{
 		password : req.body.password
 	};
 	usersModel.searchUser(data, result =>{
-		console.log(result.length);
 		if(result.length <= 0){
 			usersModel.postUser(data, results=>{
 				return res.send({
