@@ -6,12 +6,11 @@ const vehicleModel = require ('../models/vehicles');
 const getHistory = (req, res) =>{
 	let {id} = req.query;
 	id = parseInt(id) || '';
-	console.log(id);
 	historyModel.getHistories(id, results=>{
 		if(results.length > 0){
 			return res.send({
 				success : true,
-				message : 'List of Histories',
+				message : 'List of histories',
 				results : results
 			});
 		} else {
@@ -68,6 +67,7 @@ const postHistory = (req, res) =>{
 
 const deleteHistory = (req, res) =>{
 	let {id} = req.query;
+	id = parseInt(id) || 0;
 	historyModel.getHistory(id, result =>{
 		if (result.length > 0){
 			historyModel.deleteHistory(id, results =>{
@@ -89,10 +89,11 @@ const deleteHistory = (req, res) =>{
 const patchHistory = (req, res) =>{
 	let {quantity} = req.body;
 	let {id} = req.query;
+	id = parseInt(id) || 0 ;
 	let data = {id, quantity};
 	historyModel.getHistory(id, result =>{
 		if(result.length > 0){
-			if (result[0].quantity > 0){
+			if (result[0].quantity > parseInt(quantity)){
 				historyModel.patchHistory(data, result =>{
 					return res.send({
 						success : true,
