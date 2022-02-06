@@ -8,7 +8,7 @@ const getPopular = (req, res) =>{
 		if(results.length > 0){
 			return res.send({
 				success : true,
-				message : 'List of Popular by',
+				message : 'List of Popular',
 				results : results
 			});
 		} else {
