@@ -51,7 +51,8 @@ const postUsers = (req, res)=>{
 };
 
 const deleteUser = (req, res)=>{
-	const {id} = req.params;
+	let {id} = req.query;
+	id = parseInt(id) || 0;
 	usersModel.getUser(id, result=>{
 		if(result.length >0){
 			usersModel.deleteUser(id, results =>{
