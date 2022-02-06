@@ -72,7 +72,7 @@ const deleteUser = (req, res)=>{
 
 //update handling error completed.
 const patchUser = (req, res) =>{
-	let {username, email, contact} = req.query;
+	let {id} = req.query;
 	let data = {
 		fullName : req.body.fullName,
 		gender : req.body.gender,
@@ -80,21 +80,27 @@ const patchUser = (req, res) =>{
 		address : req.body.address,
 		contact : req.body.contact,
 		displayName : req.body.displayName,
-		birthDate : req.body.birthDate
+		birthDate : req.body.birthDate,
+		username : req.body.username
 	};
-	username = username || '';
-	email = email || '';
-	contact = contact || '';
-	let datas = {username, email, contact};
-	usersModel.searchUser(datas, result=>{
-		console.log(result.length);
+	id = parseInt(id) || 0;
+	usersModel.getUser(id, result=>{
 		if(result.length > 0){
-			usersModel.patchUser(result[0].id , data, results =>{
-				return res.send({
-					success : true,
-					message : 'Data has been updated',
-					results : {id : result[0].id , data}
-				});
+			usersModel.searchUser(data, resultS =>{
+				if(resultS[0].id == id){
+					usersModel.patchUser(id, data, results =>{
+						return res.send({
+							success : true,
+							message : 'Data has been updated',
+							results : {id : result[0].id , data}
+						});
+					});
+				} else {
+					return res.status(400).send({
+						success : false,
+						message : 'Bad request. Cek your id, username and email'
+					});
+				}
 			});
 		} else {
 			return res.status(404).send ({

@@ -41,7 +41,7 @@ exports.patchUser = (id, data, cb) =>{
 	let sql = `UPDATE users
     SET
         fullName = '${data.fullName}',
-        gender = ${data.gender},
+        gender = '${data.gender}',
         email = '${data.email}',
         address = '${data.address}',
         contact = '${data.contact}',
@@ -57,10 +57,9 @@ exports.patchUser = (id, data, cb) =>{
 };
 
 exports.searchUser = (data,cb)=>{
-	let sql = `SELECT id, fullName, birthDate, gender FROM users WHERE username = '${data.username}' OR email ='${data.email}' OR contact = '${data.contact}'`;
-	let results = db.query(sql, (err,res) =>{
+	let sql = `SELECT id, username, email FROM users WHERE username = '${data.username}' AND email ='${data.email}'`;
+	db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
-	console.log(results.sql);
 };
