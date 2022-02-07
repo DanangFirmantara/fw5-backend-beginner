@@ -94,18 +94,25 @@ const patchVehicle = (req,res) =>{
 	vehicleModel.getVehicle(id,results =>{
 		if (results.length > 0){
 			vehicleModel.searchVehicles(data,result =>{
-				if (result[0].id == id){
-					vehicleModel.patchVehicle(id,data,resu =>{
-						return res.send({
-							success : true,
-							message : 'Data has been update',
-							results : data
+				if (result.length > 0){
+					if (result[0].id == id){
+						vehicleModel.patchVehicle(id,data,resu =>{
+							return res.send({
+								success : true,
+								message : 'Data has been update',
+								results : data
+							});
 						});
-					});
+					} else {
+						return res.status(400).send({
+							success : false,
+							message : 'updated failed. Cek your id'
+						});
+					}
 				} else {
 					return res.status(400).send({
 						success : false,
-						message : 'updated failed'
+						message : 'updated failed. Cek your name, and location'
 					});
 				}
 			});
