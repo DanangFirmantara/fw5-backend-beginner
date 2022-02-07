@@ -4,17 +4,31 @@ const vehicleModel = require('../models/vehicles');
 
 // get vehicles succes error handling
 const getVehicles =  (req,res) =>{
-	let {name,id, location} = req.query;
+	let {name,id, location, page, limit} = req.query;
 	name = name || '';
 	id = parseInt(id) || '';
 	location = location || '';
-	let data = {name, id, location};
+	page = parseInt(page) || 1;
+	limit = parseInt(limit) || 5;
+	let offset = ( page-1 ) *limit;
+	let data = {name, id, location, offset, limit};
 	vehicleModel.getVehicles(data ,results =>{
 		if(results.length > 0){
-			return res.json({
-				success : true,
-				message : 'List vehicles',
-				results : results
+			vehicleModel.countVehicles(data, count =>{
+				const { total } = count[0];
+				const last = Math.ceil(total/limit);
+				return res.json({
+					success : true,
+					message : 'List vehicles',
+					results : results,
+					pageInfo : {
+						prev : page > 1? `http://localhost:5000/vehicles?page=${page-1}` : null,
+						next : page < last? `http://localhost:5000/vehicles?page=${page+1	}` : null,
+						totalData : total,
+						currentPage : page,
+						lastPage : last
+					}
+				});
 			});
 		} else {
 			return res.status(404).json({
