@@ -5,8 +5,9 @@ const helper = require('../helpers/helper');
 
 // get vehicles succes error handling
 const getVehicles =  (req,res) =>{
-	let {name,id, location, page, limit} = req.query;
+	let {name,id, location, page, limit, orderBy, sortType} = req.query;
 	let validate = {id, page, limit};
+	console.log(orderBy);
 	const err = helper.validationInt(validate);
 	if (err.length <= 0){
 		name = name || '';
@@ -14,8 +15,10 @@ const getVehicles =  (req,res) =>{
 		location = location || '';
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 5;
+		orderBy = orderBy || 'location';
+		sortType = sortType || 'ASC';
 		let offset = ( page-1 ) *limit;
-		let data = {name, id, location, offset, limit};
+		let data = {name, id, location, offset, limit, orderBy, sortType};
 		vehicleModel.getVehicles(data ,results =>{
 			if(results.length > 0){
 				vehicleModel.countVehicles(data, count =>{
@@ -50,6 +53,7 @@ const getVehicles =  (req,res) =>{
 		});
 	}
 };
+
 // error handling success except 1 condition when the id is null
 const deleteVehicle = (req,res)=>{
 	let {id,search} = req.query;

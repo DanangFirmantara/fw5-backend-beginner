@@ -10,11 +10,12 @@ exports.countVehicles = (data, cb) =>{
 };
 
 exports.getVehicles = (data, cb)=>{
-	let sql = `SELECT id, name, price, description, status, location, category, stock FROM vehicles WHERE name LIKE '%${data.name}%' AND id LIKE '%${data.id}%' AND location LIKE '%${data.location}%' LIMIT ${data.limit} OFFSET ${data.offset}`;
-	db.query(sql, (err,res) =>{
+	let sql = `SELECT id, name, price, description, status, location, category, stock FROM vehicles WHERE name LIKE '%${data.name}%' AND id LIKE '%${data.id}%' AND location LIKE '%${data.location}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`;
+	let result = db.query(sql, (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
+	console.log(result.sql);
 };
 
 exports.getVehicle = (id, cb) =>{
