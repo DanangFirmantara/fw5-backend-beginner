@@ -1,7 +1,14 @@
 const db = require ('../helpers/db');
 
-exports.getHistories = (id, cb) =>{
-	db.query(`SELECT id, rentStartDate, prepayment, userId, vehicleId, quantity FROM histories WHERE id LIKE '%${id}%'`, (err,res) =>{
+exports.countHistory = (data, cb) =>{
+	db.query(`SELECT COUNT(*) AS total FROM histories WHERE id LIKE '%${data.id}%'`, (err, res) =>{
+		if (err) throw err;
+		cb(res);
+	});
+};
+
+exports.getHistories = (data, cb) =>{
+	db.query(`SELECT id, rentStartDate, prepayment, userId, vehicleId, quantity FROM histories WHERE id LIKE '%${data.id}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
 		if(err) throw err;
 		cb(res);
 	});

@@ -15,7 +15,7 @@ exports.validationInt = (data) =>{
 			if(value.trim() == ''){
 				err.push(`${key} must be fill`);
 			} 
-			else if(!parseInt(value)){
+			else if(!parseInt(value) && value != 0){
 				err.push(`${key} must be integer`);
 			} 
 		}
