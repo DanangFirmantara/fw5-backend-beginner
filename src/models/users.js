@@ -9,7 +9,7 @@ exports.countUser = (data, cb) =>{
 };
 
 exports.getUsers = (data, cb)=>{
-	let result = db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%' LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
+	let result = db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});

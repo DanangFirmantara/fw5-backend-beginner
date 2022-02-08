@@ -10,10 +10,12 @@ const getUsers = (req, res) =>{
 	if (err.length <= 0){
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 5;
+		orderBy = orderBy || 'id';
+		sortType = sortType || 'ASC';
 		let offset = ( page - 1 ) * 5;
 		username = username || '';
 		id = parseInt(id) || '';
-		let data = {id, username, offset, limit};
+		let data = {id, username, offset, limit, orderBy, sortType};
 		usersModel.getUsers (data, results =>{
 			if (results.length > 0){
 				usersModel.countUser(data, count=>{
@@ -50,25 +52,23 @@ const getUsers = (req, res) =>{
 // postuser has been updated. handling error completed
 // hanya bisa melakukan sign up
 const postUsers = (req, res)=>{
-	let data = {
-		username : req.body.username,
-		contact : req.body.contact,
-		email : req.body.email,
-		password : req.body.password
-	};
+	let {username, contact, email, password} = req.body;
+	let data = {username, contact, email, password}; 
 	usersModel.searchUser(data, result =>{
 		if(result.length <= 0){
 			usersModel.postUser(data, results=>{
-				return res.send({
-					success : true,
-					message : 'insert successfully',
-					results : {id : results.insertId, data}
+				usersModel.getUser(results.insertId, final =>{
+					return res.send({
+						success : true,
+						message : 'insert successfully',
+						results : final[0]
+					});
 				});
 			});
 		} else {
 			return res.status(400).send({
 				success : false,
-				message : 'Insert failed'
+				message : 'Insert failed. Data has been input'
 			});
 		}
 	});
@@ -76,64 +76,78 @@ const postUsers = (req, res)=>{
 
 const deleteUser = (req, res)=>{
 	let {id} = req.query;
-	id = parseInt(id) || 0;
-	usersModel.getUser(id, result=>{
-		if(result.length >0){
-			usersModel.deleteUser(id, results =>{
-				return res.send({
-					success : true,
-					message : 'Deleted Succesfully',
-					results : result[0]
+	let validate = {id};
+	let err = helper.validationInt(validate);
+	if (err.length <= 0){
+		id = parseInt(id) || 0;
+		usersModel.getUser(id, result=>{
+			if(result.length >0){
+				usersModel.deleteUser(id, results =>{
+					return res.send({
+						success : true,
+						message : 'Deleted Succesfully',
+						results : result[0]
+					});
 				});
-			});
-		} else {
-			return res.status(404).send({
-				success : false,
-				message : 'Data not found'
-			});
-		}
-	});
+			} else {
+				return res.status(404).send({
+					success : false,
+					message : 'Data not found'
+				});
+			}
+		});
+	} else {
+		return res.status(400).send({
+			success : false,
+			message : 'Bad request',
+			error : err
+		});
+	}
 };
 
 //update handling error completed.
 const patchUser = (req, res) =>{
 	let {id} = req.query;
-	let data = {
-		fullName : req.body.fullName,
-		gender : req.body.gender,
-		email : req.body.email,
-		address : req.body.address,
-		contact : req.body.contact,
-		displayName : req.body.displayName,
-		birthDate : req.body.birthDate,
-		username : req.body.username
-	};
-	id = parseInt(id) || 0;
-	usersModel.getUser(id, result=>{
-		if(result.length > 0){
-			usersModel.searchUser(data, resultS =>{
-				if(resultS[0].id == id){
-					usersModel.patchUser(id, data, results =>{
-						return res.send({
-							success : true,
-							message : 'Data has been updated',
-							results : {id : result[0].id , data}
+	let validate = {id};
+	let err = helper.validationInt(validate);
+	if (err.length <= 0){
+		let {fullName, gender, email, address, contact, displayName, birthDate, username} = req.body;
+		let data = {fullName, gender, email, address, contact, displayName, birthDate, username};
+		id = parseInt(id) || 0;
+		usersModel.getUser(id, result=>{
+			if(result.length > 0){
+				usersModel.searchUser(data, resultS =>{
+					if(resultS[0].id == id){
+						usersModel.patchUser(id, data, results =>{
+							usersModel.getUser(id, final =>{
+								return res.send({
+									success : true,
+									message : 'Data has been updated',
+									results : final[0]
+								});
+							});
 						});
-					});
-				} else {
-					return res.status(400).send({
-						success : false,
-						message : 'Bad request. Cek your id, username and email'
-					});
-				}
-			});
-		} else {
-			return res.status(404).send ({
-				success : false,
-				message : 'data not found'
-			});
-		}
-	})
-	;
+					} else {
+						return res.status(400).send({
+							success : false,
+							message : 'Bad request. Cek your id, username and email'
+						});
+					}
+				});
+			} else {
+				return res.status(404).send ({
+					success : false,
+					message : 'data not found'
+				});
+			}
+		});
+	} else {
+		return res.status(400).send({
+			success : false,
+			message : 'Bad request',
+			error : err
+		});
+	}
+	
 };
 module.exports = {getUsers, postUsers, deleteUser, patchUser};
