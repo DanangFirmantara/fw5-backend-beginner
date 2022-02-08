@@ -37,7 +37,7 @@ const getVehicles =  (req,res) =>{
 			} else {
 				return res.status(404).json({
 					success : false,
-					message : 'Data Not Found'
+					message : 'Data Not Found',
 				});
 			}
 		
@@ -45,7 +45,8 @@ const getVehicles =  (req,res) =>{
 	} else {
 		return res.status(400).send({
 			success : false,
-			message : 'Bad request. cek your input limit, page, and id must be integer'
+			message : 'Bad request.',
+			error : err
 		});
 	}
 };
@@ -86,10 +87,12 @@ const postVehicle = (req,res) =>{
 	vehicleModel.searchVehicles(data, results =>{
 		if (results.length <= 0){
 			vehicleModel.postVehicle(data, result =>{
-				return res.send({
-					success : true,
-					message : 'Insert Successfully',
-					results : {data}
+				vehicleModel.getVehicle(result.insertId, final =>{
+					return res.send({
+						success : true,
+						message : 'Insert Successfully',
+						results : final[0]
+					});
 				});
 			});
 		} else {

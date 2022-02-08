@@ -7,6 +7,7 @@ const db = mysql.createConnection({
 	database : 'vehicle-rent'
 });
 
+
 db.connect();
 
 module.exports = db;
