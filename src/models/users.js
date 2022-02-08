@@ -1,8 +1,15 @@
 /* eslint-disable no-unused-vars */
 const db = require('../helpers/db');
 
+exports.countUser = (data, cb) =>{
+	db.query(`SELECT COUNT(*) AS total FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'`, (err, res) =>{
+		if (err) throw err;
+		cb(res);
+	});
+};
+
 exports.getUsers = (data, cb)=>{
-	let result = db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'`, (err,res) =>{
+	let result = db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%' LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});

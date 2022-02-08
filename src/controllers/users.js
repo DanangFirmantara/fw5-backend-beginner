@@ -1,26 +1,51 @@
 /* eslint-disable no-unused-vars */
 const usersModel = require('../models/users');
+const helper = require('../helpers/helper');
 
 // error handling success
 const getUsers = (req, res) =>{
-	let {username, id} = req.query;
-	username = username || '';
-	id = parseInt(id) || '';
-	let data = {id, username};
-	usersModel.getUsers (data, results =>{
-		if (results.length > 0){
-			return res.json({
-				success : true,
-				message : 'List of users',
-				results : results
-			});
-		} else {
-			return res.status(404).send({
-				success : false,
-				message : 'Data not found'
-			});
-		}	
-	});
+	let {username, id, page, limit, orderBy, sortType} = req.query;
+	let validate = {id, page, limit};
+	let err = helper.validationInt(validate);
+	if (err.length <= 0){
+		page = parseInt(page) || 1;
+		limit = parseInt(limit) || 5;
+		let offset = ( page - 1 ) * 5;
+		username = username || '';
+		id = parseInt(id) || '';
+		let data = {id, username, offset, limit};
+		usersModel.getUsers (data, results =>{
+			if (results.length > 0){
+				usersModel.countUser(data, count=>{
+					let {total} = count[0];
+					let last = Math.ceil(total/limit);
+					return res.json({
+						success : true,
+						message : 'List of users',
+						results : results,
+						pageInfo : {
+							prev : page > 1 ? `http://localhost:5000/users/?page=${page-1}` : null,
+							next : page < last ? `http://localhost:5000/users/?page=${page+1}` : null,
+							totalData : total,
+							lastPage : last
+						}
+					});
+				});
+			} else {
+				return res.status(404).send({
+					success : false,
+					message : 'Data not found'
+				});
+			}	
+		});
+	} else {
+		return res.status(400).send({
+			success : false,
+			message : 'Bad request',
+			error : err
+		});
+	}
+	
 };
 // postuser has been updated. handling error completed
 // hanya bisa melakukan sign up

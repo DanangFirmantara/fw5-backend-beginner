@@ -142,7 +142,7 @@ const patchVehicle = (req,res) =>{
 										message : 'Data has been update',
 										results : final[0]
 									});
-								})
+								});
 							});
 						} else {
 							return res.status(400).send({
