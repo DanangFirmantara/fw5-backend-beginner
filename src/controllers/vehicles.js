@@ -3,7 +3,7 @@ const vehicleModel = require('../models/vehicles');
 const helper = require('../helpers/helper');
 const {APP_URL} = process.env;
 const upload = require('../helpers/upload').single('image');
-const fs = require('fs')
+const fs = require('fs');
 
 // get vehicles succes error handling
 const getVehicles =  (req,res) =>{
@@ -160,7 +160,7 @@ const patchVehicle = (req,res) =>{
 											return res.status(500).send({
 												success : false,
 												message : 'File not found'
-											})
+											});
 										}
 										vehicleModel.patchVehicle(id,data,resu =>{
 											vehicleModel.getVehicle(id,final =>{
@@ -177,7 +177,7 @@ const patchVehicle = (req,res) =>{
 												});
 											});
 										});
-									})
+									});
 								} else {
 									return res.status(400).send({
 										success : false,
