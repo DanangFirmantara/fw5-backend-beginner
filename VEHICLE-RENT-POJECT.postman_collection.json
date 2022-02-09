@@ -14,7 +14,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/vehicles/?search=&id=",
+							"raw": "{{baseURL}}/vehicles/?name=alphard&id=&location=",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -24,12 +24,41 @@
 							],
 							"query": [
 								{
-									"key": "search",
-									"value": ""
+									"key": "name",
+									"value": "alphard"
 								},
 								{
 									"key": "id",
 									"value": ""
+								},
+								{
+									"key": "location",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE VEHICLE",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/vehicles?id=35",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"vehicles"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "35"
 								}
 							]
 						}
@@ -46,12 +75,12 @@
 							"urlencoded": [
 								{
 									"key": "name",
-									"value": "Toyota Alphard",
+									"value": "",
 									"type": "text"
 								},
 								{
 									"key": "location",
-									"value": "Yogyakarta",
+									"value": "Jakarta",
 									"type": "text"
 								},
 								{
@@ -76,11 +105,11 @@
 								},
 								{
 									"key": "image",
-									"value": "alphard.jpg",
+									"value": "fortuner.jpg",
 									"type": "text"
 								},
 								{
-									"key": "type",
+									"key": "category",
 									"value": "Car",
 									"type": "text"
 								}
@@ -101,31 +130,6 @@
 					"response": []
 				},
 				{
-					"name": "DELETE VEHICLE",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5000/vehicles?id=",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"vehicles"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "UPDATE VEHICLE",
 					"request": {
 						"method": "PATCH",
@@ -140,7 +144,7 @@
 								},
 								{
 									"key": "location",
-									"value": "Yogyakarta",
+									"value": "Jakarta",
 									"type": "text"
 								},
 								{
@@ -160,7 +164,7 @@
 								},
 								{
 									"key": "stock",
-									"value": "4",
+									"value": "5",
 									"type": "text"
 								},
 								{
@@ -171,7 +175,7 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:5000/vehicles?id=30",
+							"raw": "http://localhost:5000/vehicles?id=34",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -183,7 +187,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "30"
+									"value": "34"
 								}
 							]
 						}
@@ -555,7 +559,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/list?filterBy=car",
+							"raw": "{{baseURL}}/list?filterBy=Car",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -565,7 +569,7 @@
 							"query": [
 								{
 									"key": "filterBy",
-									"value": "car"
+									"value": "Car"
 								}
 							]
 						}
@@ -627,7 +631,17 @@
 					"name": "LIST POPULAR",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/popular/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"popular",
+								""
+							]
+						}
 					},
 					"response": []
 				},
@@ -635,7 +649,22 @@
 					"name": "LIST POPULAR IN TOWN",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/popular?location=Jakarta",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"popular"
+							],
+							"query": [
+								{
+									"key": "location",
+									"value": "Jakarta"
+								}
+							]
+						}
 					},
 					"response": []
 				}

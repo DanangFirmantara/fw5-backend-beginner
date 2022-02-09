@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 08 Feb 2022 pada 10.23
+-- Waktu pembuatan: 09 Feb 2022 pada 04.09
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.4.11
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `vehicle-rent`
+-- Database: `vehicle_rent`
 --
 
 -- --------------------------------------------------------
@@ -44,7 +44,6 @@ CREATE TABLE `histories` (
 --
 
 INSERT INTO `histories` (`id`, `rentStartDate`, `rentEndDate`, `prepayment`, `userId`, `vehicleId`, `quantity`, `createdAt`, `updatedAt`) VALUES
-(1, '2022-02-02', '2022-02-04', 1, 67, 29, 0, '2022-02-02 14:22:43', '2022-02-02 23:27:38'),
 (3, '2022-02-02', '2022-02-04', 1, 67, 30, 0, '2022-02-02 15:54:31', '2022-02-02 23:27:38'),
 (11, '2022-02-02', '2022-02-04', 1, 67, 29, 0, '2022-02-02 17:38:20', '2022-02-02 23:27:38'),
 (12, '2022-02-02', '2022-02-04', 1, 67, 30, 0, '2022-02-02 17:39:18', '2022-02-02 23:27:38'),
@@ -53,8 +52,10 @@ INSERT INTO `histories` (`id`, `rentStartDate`, `rentEndDate`, `prepayment`, `us
 (17, '2022-01-02', '2022-01-03', 1, 67, 30, 0, '2022-02-02 22:21:39', '2022-02-02 23:27:38'),
 (21, '2022-01-02', '2022-01-03', 1, 67, 30, 0, '2022-02-02 22:36:07', '2022-02-02 23:27:38'),
 (23, '2022-01-07', '2022-01-08', 1, 67, 30, 0, '2022-02-06 13:45:56', '2022-02-06 14:52:58'),
-(24, '2022-01-07', '2022-01-08', 1, 67, 47, 1, '2022-02-07 09:53:29', NULL),
-(25, '2022-01-07', '2022-01-08', 1, 67, 47, 3, '2022-02-07 09:54:30', NULL);
+(24, '2022-01-07', '2022-01-08', 1, 67, 47, 0, '2022-02-07 09:53:29', '2022-02-08 22:48:42'),
+(25, '2022-01-07', '2022-01-08', 1, 67, 47, 0, '2022-02-07 09:54:30', '2022-02-08 22:46:49'),
+(26, '2022-01-07', '2022-01-08', 1, 67, 29, 0, '2022-02-08 22:33:49', '2022-02-08 22:42:57'),
+(27, '2022-01-07', '2022-01-08', 1, 67, 29, 0, '2022-02-08 22:51:05', '2022-02-08 22:51:14');
 
 --
 -- Trigger `histories`
@@ -146,7 +147,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `email`, `contact`, `password`, `fullName`, `gender`, `address`, `displayName`, `birthDate`, `createdAt`, `updatedAt`) VALUES
 (67, 'gigihas', 'gigih@gmail.com', '087898439385', 'gigih', 'gigih Ariffan s', 'Male', 'Dharmasraya', 'Gigih', '1999-05-09', '2022-02-02 14:17:51', NULL),
 (70, 'danangf14', 'danangf14@gmail.com', '087898439385', 'danang', 'Danang Firmantara', 'Male', 'Padang', 'Danang', '1999-05-09', '2022-02-02 14:17:51', '2022-02-06 12:05:16'),
-(71, 'putra14', 'putra@gmail.com', '087898439385', 'putra', 'Afiif Putra', 'Male', 'Padang panjang', 'Putra', '1999-05-09', '2022-02-06 11:38:37', '2022-02-06 12:01:53');
+(71, 'putra14', 'putra@gmail.com', '087898439385', 'putra', 'Afiif Putra', 'Male', 'Padang panjang', 'Putra', '1999-05-09', '2022-02-06 11:38:37', '2022-02-06 12:01:53'),
+(72, 'putri123', 'putri@gmail.com', '087898439385', 'putri', 'Putri Diang', 'Female', 'Padang', 'putri', '1999-05-09', '2022-02-08 21:59:58', '2022-02-08 22:09:16');
 
 -- --------------------------------------------------------
 
@@ -174,7 +176,7 @@ CREATE TABLE `vehicles` (
 
 INSERT INTO `vehicles` (`id`, `category`, `name`, `location`, `description`, `price`, `status`, `stock`, `image`, `createdAt`, `updatedAt`) VALUES
 (21, 'Bike', 'Fixie', 'Padang', 'Up to 1 Person, return before 4 PM', 20000, 'Available', 4, 'fixie.jpg\nfixie2.jpg', '2022-02-01 21:15:39', '2022-02-03 20:02:03'),
-(29, 'Car', 'Toyota Vellfire', 'Yogyakarta', 'Up to 5 Person, return before 4 PM', 400000, 'Available', 5, 'vellfire.jpg', '2022-02-01 22:38:41', '2022-02-07 08:39:28'),
+(29, 'Car', 'Toyota Vellfire', 'Yogyakarta', 'Up to 5 Person, return before 4 PM', 400000, 'Available', 5, 'vellfire.jpg', '2022-02-01 22:38:41', '2022-02-08 22:51:14'),
 (30, 'Car', 'Toyota Alphard', 'Yogyakarta', 'Up to 5 Person, return before 4 PM', 400000, 'Available', 5, 'alphard.jpg', '2022-02-01 23:09:57', '2022-02-07 08:40:18'),
 (31, 'Car', 'Toyota Fortuner', 'Yogyakarta', 'Up to 5 adult, return before 4 PM', 400000, 'Available', 5, 'fortuner.jpg', '2022-02-03 20:12:32', NULL),
 (32, 'Car', 'Toyota Fortuner', 'Jakarta', 'Up to 5 adult, return before 4 PM', 400000, 'Available', 5, 'fortuner.jpg', '2022-02-03 20:16:38', NULL),
@@ -189,7 +191,9 @@ INSERT INTO `vehicles` (`id`, `category`, `name`, `location`, `description`, `pr
 (44, 'Motorbike', 'Honda Beat Street', 'Yogyakarta', 'Up to 2 Person, return before 4 PM', 50000, 'Available', 4, 'beatStreet.jpg', '2022-02-07 08:58:44', '2022-02-07 09:05:51'),
 (45, 'Motorbike', 'Honda Scoopy', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 4, 'scoopy.jpg', '2022-02-07 08:59:42', NULL),
 (46, 'Motorbike', 'Yamaha FreeGo', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 4, 'freeGo.jpg', '2022-02-07 09:00:52', NULL),
-(47, 'Motorbike', 'Honda Vario 125', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'full booked', 0, 'vario125.jpg', '2022-02-07 09:01:31', '2022-02-07 09:54:30');
+(47, 'Motorbike', 'Honda Vario 125', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 7, 'vario125.jpg', '2022-02-07 09:01:31', '2022-02-08 22:48:42'),
+(48, 'Car', 'Honda Jazz', 'Jakarta', 'Up to 4 adult, return before 4 PM', 500000, 'Available', 4, 'jazz.jpg', '2022-02-08 20:24:11', NULL),
+(49, 'Car', 'Honda Brio', 'Jakarta', 'Up to 4 adult, return before 4 PM', 300000, 'Available', 4, 'jazz.jpg', '2022-02-08 21:19:06', NULL);
 
 --
 -- Indexes for dumped tables
@@ -230,7 +234,7 @@ ALTER TABLE `vehicles`
 -- AUTO_INCREMENT untuk tabel `histories`
 --
 ALTER TABLE `histories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT untuk tabel `prepayment`
@@ -242,13 +246,13 @@ ALTER TABLE `prepayment`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT untuk tabel `vehicles`
 --
 ALTER TABLE `vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
