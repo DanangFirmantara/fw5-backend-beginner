@@ -6,7 +6,10 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 
 app.use(require('./src/routes'));
+app.use('/uploads', express.static('uploads'));
 
-app.listen(5000,()=>{
-	console.log('App listening on port 5000');
+const {APP_PORT} = process.env;
+
+app.listen(APP_PORT,()=>{
+	console.log(`App listening on port ${APP_PORT}`);
 });

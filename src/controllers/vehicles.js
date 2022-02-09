@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 const vehicleModel = require('../models/vehicles');
 const helper = require('../helpers/helper');
-
+const {APP_URL} = process.env;
+const upload = require('../helpers/upload').single('image');
+const fs = require('fs')
 
 // get vehicles succes error handling
 const getVehicles =  (req,res) =>{
@@ -123,56 +125,90 @@ const postVehicle = (req,res) =>{
 
 //update success handling error
 const patchVehicle = (req,res) =>{
-	let {id} = req.query;
-	let {name, location, description, price, status, stock, image, category} = req.body;
-	let validate = {id, price, stock};
-	let err = helper.validationInt(validate);
-	if (err.length <= 0){
-		let data = {name, location, description, price, status, stock, image, category};
-		id = parseInt(id) || 0;
-		vehicleModel.getVehicle(id,results =>{
-			if (results.length > 0){
-				vehicleModel.searchVehicles(data,result =>{
-					if (result.length > 0){
-						if (result[0].id == id){
-							vehicleModel.patchVehicle(id,data,resu =>{
-								vehicleModel.getVehicle(id,final =>{
-									return res.send({
-										success : true,
-										message : 'Data has been update',
-										results : final[0]
+	console.log(req.file);
+	upload(req, res, err=>{
+		if(err){
+			return res.send({
+				success : false,
+				message : err.message
+			});
+		} else {
+			let {id} = req.query;
+			let {name, location, description, price, status, stock, image, category} = req.body;
+			let validate = {id, price, stock};
+			let err = helper.validationInt(validate);
+			let data = {};
+			let fillable = ['name', 'location', 'description', 'price', 'status', 'stock','category'];
+			fillable.forEach(o =>{
+				if(req.body[o]){
+					data[o] = req.body[o];
+				}
+			});
+			if(req.file){
+				data.image = req.file.path;
+			}
+			console.log(data);
+			if (err.length <= 0){
+				id = parseInt(id) || 0;
+				vehicleModel.getVehicle(id,results =>{
+					if (results.length > 0){
+						vehicleModel.searchVehicles(data,result =>{
+							if (result.length > 0){
+								if (result[0].id == id){
+									fs.rm(result[0].image,{}, err =>{
+										if (err) {
+											return res.status(500).send({
+												success : false,
+												message : 'File not found'
+											})
+										}
+										vehicleModel.patchVehicle(id,data,resu =>{
+											vehicleModel.getVehicle(id,final =>{
+												const processResult = final.map(obj=>{
+													if(obj.image !== null){
+														obj.image = `${APP_URL}/${obj.image}`;
+													}
+													return obj;
+												});
+												return res.send({
+													success : true,
+													message : 'Data has been update',
+													results : processResult
+												});
+											});
+										});
+									})
+								} else {
+									return res.status(400).send({
+										success : false,
+										message : 'updated failed. Cek your id'
 									});
+								}
+							} else {
+								return res.status(400).send({
+									success : false,
+									message : 'updated failed. Cek your name, and location'
 								});
-							});
-						} else {
-							return res.status(400).send({
-								success : false,
-								message : 'updated failed. Cek your id'
-							});
-						}
+							}
+						});
 					} else {
-						return res.status(400).send({
+						return res.status(404).send({
 							success : false,
-							message : 'updated failed. Cek your name, and location'
+							message : 'Data not found'
 						});
 					}
 				});
 			} else {
-				return res.status(404).send({
+				return res.status(400).send({
 					success : false,
-					message : 'Data not found'
+					message :'Bad request',
+					error : err
 				});
 			}
-		});
-	} else {
-		return res.status(400).send({
-			success : false,
-			message :'Bad request',
-			error : err
-		});
-	}
 	
     
+		}
+	});
 };
 
 
