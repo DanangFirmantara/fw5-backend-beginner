@@ -9,6 +9,13 @@ exports.countVehicles = (data, cb) =>{
 	});
 };
 
+exports.countVehiclesAsyn = (data) => new Promise((resolve, reject) =>{
+	db.query(`SELECT COUNT(*) as total FROM vehicles WHERE name LIKE '%${data.name}%' AND id LIKE '%${data.id}%' AND location LIKE '%${data.location}%'`, (err, res) =>{
+		if (err) reject (err);
+		resolve(res);
+	});
+});
+
 exports.getVehicles = (data, cb)=>{
 	let sql = `SELECT id, name, price, description, status, location, category, stock FROM vehicles WHERE name LIKE '%${data.name}%' AND id LIKE '%${data.id}%' AND location LIKE '%${data.location}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`;
 	let result = db.query(sql, (err,res) =>{
@@ -17,6 +24,13 @@ exports.getVehicles = (data, cb)=>{
 	});
 	console.log(result.sql);
 };
+
+exports.getVehiclesAsyn = (data) => new Promise((resolve, reject) =>{
+	db.query(`SELECT id, name, price, description, status, location, category, stock FROM vehicles WHERE name LIKE '%${data.name}%' AND id LIKE '%${data.id}%' AND location LIKE '%${data.location}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res) =>{
+		if (err) reject(err);
+		resolve (res);
+	});
+});
 
 exports.getVehicle = (id, cb) =>{
 	db.query ('SELECT id, name, price, description, status, location, stock, image FROM vehicles WHERE id = ?', [id],(err,res) =>{

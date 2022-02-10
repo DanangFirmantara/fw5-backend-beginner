@@ -14,9 +14,11 @@ exports.validationInt = (data) =>{
 		if(value != undefined){
 			if(value.trim() == ''){
 				err.push(`${key} must be fill`);
+				// err[key] = `${key} must be fill`;
 			} 
 			else if(!parseInt(value) && value != 0){
 				err.push(`${key} must be integer`);
+				// err[key] = 'Data must be integer';
 			} 
 		}
 	}

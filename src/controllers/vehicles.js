@@ -4,9 +4,10 @@ const helper = require('../helpers/helper');
 const {APP_URL} = process.env;
 const upload = require('../helpers/upload').single('image');
 const fs = require('fs');
+const { response } = require('../helpers/response');
 
 // get vehicles succes error handling
-const getVehicles =  (req,res) =>{
+const getVehicles = async(req,res) =>{
 	let {name,id, location, page, limit, orderBy, sortType} = req.query;
 	let validate = {id, page, limit};
 	const err = helper.validationInt(validate);
@@ -20,38 +21,26 @@ const getVehicles =  (req,res) =>{
 		sortType = sortType || 'ASC';
 		let offset = ( page-1 ) *limit;
 		let data = {name, id, location, offset, limit, orderBy, sortType};
-		vehicleModel.getVehicles(data ,results =>{
+		try {
+			const results = await vehicleModel.getVehiclesAsyn(data);
 			if(results.length > 0){
-				vehicleModel.countVehicles(data, count =>{
+				try{
+					const count = await vehicleModel.countVehiclesAsyn(data);
 					const { total } = count[0];
 					const last = Math.ceil(total/limit);
-					return res.json({
-						success : true,
-						message : 'List vehicles',
-						results : results,
-						pageInfo : {
-							prev : page > 1? `http://localhost:5000/vehicles?page=${page-1}` : null,
-							next : page < last? `http://localhost:5000/vehicles?page=${page+1}` : null,
-							totalData : total,
-							currentPage : page,
-							lastPage : last
-						}
-					});
-				});
+					response(res, 'List vehicles new', results,{limit, total, page});
+				} catch (err){
+					response(res,'Unexpected input',err,null,500);
+				}
 			} else {
-				return res.status(404).json({
-					success : false,
-					message : 'Data Not Found',
-				});
+				response (res,'Data not found',null,null, 404);
 			}
+		}catch(err) {
+			response(res,'Unexpected input', err,null,500);
+		}
 		
-		});
 	} else {
-		return res.status(400).send({
-			success : false,
-			message : 'Bad request.',
-			error : err
-		});
+		response (res,'Bad request',err,null, 400);
 	}
 };
 
