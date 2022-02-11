@@ -22,5 +22,11 @@ exports.validationInt = (data) =>{
 			} 
 		}
 	}
+	if (err.length > 0){
+		err = {
+			errno : 1000,
+			err
+		};
+	}
 	return err;
 };

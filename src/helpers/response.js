@@ -21,6 +21,12 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 			error = data;
 		} else {
 			results = data;
+			results.map(obj =>{
+				if(obj.image){
+					obj.image = APP_URL + '/' + obj.image;
+					
+				}
+			});
 		}
 	}
 	if (status >= 400){

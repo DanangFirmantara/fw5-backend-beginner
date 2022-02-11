@@ -24,21 +24,17 @@ const getVehicles = async(req,res) =>{
 		try {
 			const results = await vehicleModel.getVehiclesAsyn(data);
 			if(results.length > 0){
-				try{
-					const count = await vehicleModel.countVehiclesAsyn(data);
-					const { total } = count[0];
-					const last = Math.ceil(total/limit);
-					response(res, 'List vehicles new', results,{limit, total, page});
-				} catch (err){
-					response(res,'Unexpected input',err,null,500);
-				}
+				const count = await vehicleModel.countVehiclesAsyn(data);
+				const { total } = count[0];
+				const last = Math.ceil(total/limit);
+				response(res, 'List vehicles new', results,{limit, total, page});
 			} else {
 				response (res,'Data not found',null,null, 404);
 			}
-		}catch(err) {
+		}
+		catch(err) {
 			response(res,'Unexpected input', err,null,500);
 		}
-		
 	} else {
 		response (res,'Bad request',err,null, 400);
 	}
@@ -144,12 +140,9 @@ const patchVehicle = (req,res) =>{
 						vehicleModel.searchVehicles(data,result =>{
 							if (result.length > 0){
 								if (result[0].id == id){
-									fs.rm(result[0].image,{}, err =>{
+									fs.rm(result[0].image,{ recursive : true }, err =>{
 										if (err) {
-											return res.status(500).send({
-												success : false,
-												message : 'File not found'
-											});
+											response(res, 'File not found', err, null, 500);
 										}
 										vehicleModel.patchVehicle(id,data,resu =>{
 											vehicleModel.getVehicle(id,final =>{

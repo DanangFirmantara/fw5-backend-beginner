@@ -26,7 +26,7 @@ exports.getVehicles = (data, cb)=>{
 };
 
 exports.getVehiclesAsyn = (data) => new Promise((resolve, reject) =>{
-	db.query(`SELECT id, name, price, description, status, location, category, stock FROM vehicles WHERE name LIKE '%${data.name}%' AND id LIKE '%${data.id}%' AND location LIKE '%${data.location}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res) =>{
+	db.query(`SELECT id, name, price, description, status, location, category, stock, image FROM vehicles WHERE name LIKE '%${data.name}%' AND id LIKE '%${data.id}%' AND location LIKE '%${data.location}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res) =>{
 		if (err) reject(err);
 		resolve (res);
 	});
