@@ -2,6 +2,7 @@
 const usersModel = require('../models/users');
 const helper = require('../helpers/helper');
 const { response } = require('../helpers/response');
+const bcrypt = require('bcrypt');
 
 // error handling success
 const getUsers = async(req, res) =>{
@@ -32,108 +33,101 @@ const getUsers = async(req, res) =>{
 	} catch (err){
 		response(res, 'Unexpected error', err, null, 500);
 	}
-	
-	
-};
-// postuser has been updated. handling error completed
-// hanya bisa melakukan sign up
-const postUsers = (req, res)=>{
-	let {username, contact, email, password} = req.body;
-	let data = {username, contact, email, password}; 
-	usersModel.searchUser(data, result =>{
-		if(result.length <= 0){
-			usersModel.postUser(data, results=>{
-				usersModel.getUser(results.insertId, final =>{
-					return res.send({
-						success : true,
-						message : 'insert successfully',
-						results : final[0]
-					});
-				});
-			});
-		} else {
-			return res.status(400).send({
-				success : false,
-				message : 'Insert failed. Data has been input'
-			});
-		}
-	});
 };
 
-const deleteUser = (req, res)=>{
-	let {id} = req.query;
-	let validate = {id};
-	let err = helper.validationInt(validate);
-	if (err.length <= 0){
-		id = parseInt(id) || 0;
-		usersModel.getUser(id, result=>{
+// postuser has been updated. handling error completed
+// hanya bisa melakukan sign up
+// disni akan ada make password dan create hash for secure
+// input email, contact, dan password
+const postUsers = async(req, res)=>{
+	try{
+		let {username, contact, email, password} = req.body;
+		let fillable = ['username', 'contact', 'email', 'password'];
+		fillable.forEach(obj => {
+			if(!req.body[obj]){
+				response(res, 'Bad request. username, contact, email, password must be fill', null, null, 400);
+			}
+		});
+		const saltRounds = 10;
+		password = await bcrypt.hash(password, saltRounds);
+		let data = {username, contact, email, password}; 
+		const result = await usersModel.searchUserAsyn(data);
+		if(result.length <= 0){
+			const results = await usersModel.postUserAsyn(data);
+			const final = await usersModel.getUserAsyn(results.insertId);
+			response(res, 'Inserted successfully', final);
+		} else {
+			response(res, 'Insert failed. Data has been input');
+		}
+	} catch(err){
+		response(res, 'Unexpected error', err, null, 500);
+	}
+};
+
+const deleteUser = async(req, res)=>{
+	try{
+		let {id} = req.query;
+		let validate = {id};
+		let err = helper.validationInt(validate);
+		if (err.length <= 0){
+			id = parseInt(id) || 0;
+			const result = await usersModel.getUserAsyn(id);
 			if(result.length >0){
-				usersModel.deleteUser(id, results =>{
-					return res.send({
-						success : true,
-						message : 'Deleted Succesfully',
-						results : result[0]
-					});
-				});
+				await usersModel.deleteUserAsyn(id);
+				response(res, 'Deleted successfully', result);
 			} else {
 				return res.status(404).send({
 					success : false,
 					message : 'Data not found'
 				});
 			}
-		});
-	} else {
-		return res.status(400).send({
-			success : false,
-			message : 'Bad request',
-			error : err
-		});
+		} else {
+			response(res, 'Bad request', err, null, 400);
+		}
+	} catch (err) {	
+		response(res, 'Unexpected error', err, null, 500);
 	}
 };
 
 //update handling error completed.
-const patchUser = (req, res) =>{
-	let {id} = req.query;
-	let validate = {id};
-	let err = helper.validationInt(validate);
-	if (err.length <= 0){
-		let {fullName, gender, email, address, contact, displayName, birthDate, username} = req.body;
-		let data = {fullName, gender, email, address, contact, displayName, birthDate, username};
-		id = parseInt(id) || 0;
-		usersModel.getUser(id, result=>{
+const patchUser = async(req, res) =>{
+	try{
+		let {id} = req.query;
+		let validate = {id};
+		let err = helper.validationInt(validate);
+		if (err.length <= 0){
+			let {fullName, gender, email, address, contact, displayName, birthDate, username} = req.body;
+			let data = {};
+			let fillable = ['fullName', 'gender', 'email', 'address', 'contact', 'displayName', 'birthDate', 'username'];
+			fillable.forEach(obj =>{
+				if(req.body[obj]){
+					data[obj] = req.body[obj];
+				}
+			});
+			id = parseInt(id) || 0;
+			const result = await usersModel.getUserAsyn(id);
 			if(result.length > 0){
-				usersModel.searchUser(data, resultS =>{
-					if(resultS[0].id == id){
-						usersModel.patchUser(id, data, results =>{
-							usersModel.getUser(id, final =>{
-								return res.send({
-									success : true,
-									message : 'Data has been updated',
-									results : final[0]
-								});
-							});
-						});
-					} else {
-						return res.status(400).send({
-							success : false,
-							message : 'Bad request. Cek your id, username and email'
-						});
-					}
-				});
+				const resultS = await usersModel.searchUserAsyn(data);
+				if(resultS[0].id == id){
+					const results = await usersModel.patchUserAsyn(id, data);
+					const final = await usersModel.getUserAsyn(id);
+					response(res, 'Data has been updated', final);
+				} else {
+					response(res, 'Bad request. Cek your id, username and email', null, null, 400);
+					
+				}
 			} else {
-				return res.status(404).send ({
-					success : false,
-					message : 'data not found'
-				});
+				response(res, 'Data not found');
 			}
-		});
-	} else {
-		return res.status(400).send({
-			success : false,
-			message : 'Bad request',
-			error : err
-		});
+			
+		} else {
+			response(res, 'Bad request', err, null, 400);
+			
+		}
+	}catch (err) {
+		response(res, 'Unexpected error', err, null, 500);
 	}
+	
 	
 };
 module.exports = {getUsers, postUsers, deleteUser, patchUser};

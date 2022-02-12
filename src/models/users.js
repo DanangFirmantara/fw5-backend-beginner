@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+const { reject } = require('bcrypt/promises');
 const db = require('../helpers/db');
 
 exports.countUser = (data, cb) =>{
@@ -30,56 +31,71 @@ exports.getUsersAsyn = (data) => new Promise((resolve, reject) =>{
 });
 
 exports.getUser = (id, cb) =>{
-	let sql = `SELECT * FROM users
-    WHERE
-        id=${id}`;
-	db.query (sql, (err, res) =>{
+	db.query ('SELECT * FROM users WHERE id=?',[id], (err, res) =>{
 		if (err) throw err;
 		cb(res);
 	});
 };
+
+exports.getUserAsyn = (id) => new Promise((resolve, reject) =>{
+	db.query ('SELECT * FROM users WHERE id=?',[id], (err, res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
 
 exports.postUser = (data, cb) =>{
-	let results = db.query('INSERT INTO users (username, email, contact, password) VALUE (?,?,?,?)',[data.username, data.email, data.contact, data.password], (err,res) =>{
+	db.query('INSERT INTO users SET ?',[data], (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
-	console.log(results.sql);
 };
 
+exports.postUserAsyn = (data) => new Promise((resolve, reject) =>{
+	db.query('INSERT INTO users SET ?',[data], (err,res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
+
 exports.deleteUser = (id, cb) =>{
-	let sql = `DELETE FROM users
-    WHERE
-        id =${id}`;
-	db.query(sql,(err, res) =>{
+	db.query('DELETE FROM users WHERE id =id',[id],(err, res) =>{
 		if(err) throw err;
 		cb(res);
 	});
 };
 
-exports.patchUser = (id, data, cb) =>{
-	let sql = `UPDATE users
-    SET
-        fullName = '${data.fullName}',
-        gender = '${data.gender}',
-        email = '${data.email}',
-        address = '${data.address}',
-        contact = '${data.contact}',
-        displayName = '${data.displayName}',
-        birthDate = ?
-    WHERE
-        id = ${id}`;
+exports.deleteUserAsyn = (id) => new Promise((resolve, reject) =>{
+	db.query('DELETE FROM users WHERE id =?',[id],(err, res) =>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});
 
-	db.query(sql,[data.birthDate], (err, res) =>{
+exports.patchUser = (id, data, cb) =>{
+	db.query('UPDATE users SET ? WHERE id = ?',[data, id], (err, res) =>{
 		if (err) throw err;
 		cb (res);
 	});
 };
 
+exports.patchUserAsyn = (id, data) => new Promise((resolve, reject) =>{
+	db.query('UPDATE users SET ? WHERE id = ?',[data, id], (err, res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
+
 exports.searchUser = (data,cb)=>{
-	let sql = `SELECT id, username, email FROM users WHERE username = '${data.username}' AND email ='${data.email}'`;
-	db.query(sql, (err,res) =>{
+	db.query(`SELECT id, username, email FROM users WHERE username = '${data.username}' AND email ='${data.email}'`, (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
 };
+
+exports.searchUserAsyn = (data) =>new Promise((resolve, reject) =>{
+	db.query(`SELECT id, username, email FROM users WHERE username = '${data.username}' AND email ='${data.email}'`, (err,res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
