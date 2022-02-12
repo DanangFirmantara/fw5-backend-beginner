@@ -39,23 +39,40 @@ exports.getVehicle = (id, cb) =>{
 	});
 };
 
+exports.getVehicleAsyn = (id) => new Promise((resolve, reject) =>{
+	db.query ('SELECT id, name, price, description, status, location, stock, image FROM vehicles WHERE id = ?', [id],(err,res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
+
 exports.deleteVehicle = (id ,cb) =>{
-	let sql = `DELETE FROM vehicles
-	 WHERE 
-	 	id=?`;
-	db.query(sql,[id], (err,res) =>{
+	db.query('DELETE FROM vehicles WHERE id=?',[id], (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
 };
 
+exports.deleteVehicleAsyn = (id) => new Promise((resolve, reject) =>{
+	db.query('DELETE FROM vehicles WHERE id=?',[id], (err,res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
+
 exports.postVehicle = (data,cb) =>{
-	let result = db.query('INSERT INTO vehicles SET ?',[data], (err,res) =>{
+	db.query('INSERT INTO vehicles SET ?',[data], (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
-	console.log(result.sql);
 };
+
+exports.postVehicleAsyn = (data) => new Promise((resolve, reject) =>{
+	db.query('INSERT INTO vehicles SET ?',[data], (err,res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
 
 exports.patchVehicle = (id, data, cb) =>{
 	let result = db.query('UPDATE vehicles SET ? WHERE id=?',[data, id],(err,res) =>{
@@ -65,6 +82,13 @@ exports.patchVehicle = (id, data, cb) =>{
 	console.log(result.sql);
 };
 
+exports.patchVehicleAsyn = (id, data) => new Promise((resolve, reject) =>{
+	db.query('UPDATE vehicles SET ? WHERE id=?',[data, id],(err,res) =>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});
+
 exports.searchVehicles = (data,cb)=>{
 	let sql = `SELECT id, name, location, image FROM vehicles WHERE name LIKE '%${data.name}%' AND location LIKE '${data.location}%'`;
 	db.query(sql, (err,res) =>{
@@ -72,3 +96,11 @@ exports.searchVehicles = (data,cb)=>{
 		cb(res);
 	});
 };
+
+exports.searchVehiclesAsyn = (data) => new Promise((resolve, reject) =>{
+	let sql = `SELECT id, name, location, image FROM vehicles WHERE name LIKE '%${data.name}%' AND location LIKE '${data.location}%'`;
+	db.query(sql, (err,res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});

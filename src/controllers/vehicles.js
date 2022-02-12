@@ -41,82 +41,82 @@ const getVehicles = async(req,res) =>{
 };
 
 // error handling success except 1 condition when the id is null
-const deleteVehicle = (req,res)=>{
+const deleteVehicle = async(req,res)=>{
 	let {id} = req.query;
 	let validate = {id};
 	let err = helper.validationInt(validate);
 	if(err.length <= 0 ){
 		id = parseInt(id) || 0;
-		vehicleModel.getVehicle(id,(result) =>{
-			if (result.length > 0){
-				vehicleModel.deleteVehicle(id,(results)=>{
-					return res.send({
-						success : true,
-						message : `Data from id ${id} Succesfully deleted `,
-						results : result[0]
-					});
-				});
-			} else {
-				return res.status(404).send({
-					success : false,
-					message : 'Data not found'
-				});
-			}
-		
-		});
+		const result = await vehicleModel.getVehicleAsyn(id);
+		if (result.length > 0){
+			const results = await vehicleModel.deleteVehicleAsyn(id);
+			fs.rm(result[0].image, { rescursive:false}, err =>{
+				if(err){
+					response(res, 'Data not found', err, null, 500);
+				}
+				response(res,'Deleted successfully', result);
+				
+			});
+		} else {
+			response(res, 'Data not found', null, null, 404);
+		}
 	} else {
-		return res.status(400).send({
-			success : false,
-			message :'Bad request',
-			error : err
-		});
+		response(res, 'Bad request', err, null, 400);
 	}
 	
 };
 
 const postVehicle = (req,res) =>{
-	let {name, location, description, price, status, stock, image, category} = req.body;
-	let validate = {price, stock};
-	let err = helper.validationInt(validate);
-	if(err.length <= 0){
-		let data = {name, location, description, price, status, stock, image, category};
-		vehicleModel.searchVehicles(data, results =>{
-			if (results.length <= 0){
-				vehicleModel.postVehicle(data, result =>{
-					vehicleModel.getVehicle(result.insertId, final =>{
-						return res.send({
-							success : true,
-							message : 'Insert Successfully',
-							results : final[0]
-						});
-					});
-				});
+	upload(req, res, async err =>{
+		try{
+			if(err){
+				response(res, err.message, null, null, 400);
 			} else {
-				return res.status(400).send({
-					success : false,
-					message : 'insert failed. name and location has been input '
-				});
+				let {name, location, description, price, status, stock, image, category} = req.body;
+				let validate = {price, stock};
+				let err = helper.validationInt(validate);
+				if(err.length <= 0){
+					let data = {};
+					const fillable = ['name', 'location', 'description', 'price', 'status', 'stock', 'category'];
+					fillable.forEach(obj =>{
+						if(req.body[obj]){
+							data[obj] = req.body[obj];
+						}
+					});
+					if(req.file){
+						data.image = req.file.path;
+					}
+					const results = await vehicleModel.searchVehiclesAsyn(data);
+					if (results.length <= 0){
+						const result = await vehicleModel.postVehicleAsyn(data);
+						const final = await vehicleModel.getVehicleAsyn (result.insertId);
+						response(res, 'Insert succesfully', final);
+					} else {
+						if(data.image){
+							fs.rm(data.image,{ recursive : true}, err =>{
+								if (err) {
+									response(res, 'Data not found', err, null, 500);
+								}
+							});
+						}
+						response(res,'insert failed. name and location has been input', null, null, 400);	
+					}
+				} else {
+					response(res, 'Bad request', err, null, 400);
+				}
 			}
-		});
-	} else {
-		return res.status(400).send({
-			success : false,
-			message :'Bad request',
-			error : err
-		});
-	}
-	
+		} catch (err){
+			response(res, 'Unexpected error', err, null, 500);
+		}
+		
+	});
 };
 
 //update success handling error
 const patchVehicle = (req,res) =>{
-	console.log(req.file);
-	upload(req, res, err=>{
+	upload(req, res, async err=>{
 		if(err){
-			return res.send({
-				success : false,
-				message : err.message
-			});
+			response(res, err.message, null,null, 400);
 		} else {
 			let {id} = req.query;
 			let {name, location, description, price, status, stock, image, category} = req.body;
@@ -132,63 +132,53 @@ const patchVehicle = (req,res) =>{
 			if(req.file){
 				data.image = req.file.path;
 			}
-			console.log(data);
 			if (err.length <= 0){
 				id = parseInt(id) || 0;
-				vehicleModel.getVehicle(id,results =>{
+				try{
+					const results = await vehicleModel.getVehicleAsyn(id);
 					if (results.length > 0){
-						vehicleModel.searchVehicles(data,result =>{
-							if (result.length > 0){
-								if (result[0].id == id){
-									fs.rm(result[0].image,{ recursive : true }, err =>{
+						const result = await vehicleModel.searchVehiclesAsyn(data);
+						if (result.length > 0){
+							if (result[0].id == id){
+								fs.rm(results[0].image,{ recursive : true }, async err =>{
+									try {
 										if (err) {
 											response(res, 'File not found', err, null, 500);
 										}
-										vehicleModel.patchVehicle(id,data,resu =>{
-											vehicleModel.getVehicle(id,final =>{
-												const processResult = final.map(obj=>{
-													if(obj.image !== null){
-														obj.image = `${APP_URL}/${obj.image}`;
-													}
-													return obj;
-												});
-												return res.send({
-													success : true,
-													message : 'Data has been update',
-													results : processResult
-												});
-											});
+										const resultUpdate = await vehicleModel.patchVehicleAsyn(id, data);
+										const final = await vehicleModel.getVehicleAsyn (id);
+										const processResult = final.map(obj=>{
+											if(obj.image !== null){
+												obj.image = `${APP_URL}/${obj.image}`;
+											}
+											return obj;
 										});
-									});
-								} else {
-									return res.status(400).send({
-										success : false,
-										message : 'updated failed. Cek your id'
-									});
-								}
+										response (res,'Data has been update', processResult);
+									} catch (err){
+										response(res,'Unexpected error', err, null, 500);
+									}
+								});
 							} else {
 								return res.status(400).send({
 									success : false,
-									message : 'updated failed. Cek your name, and location'
+									message : 'updated failed. Cek your id'
 								});
 							}
-						});
+						} else {
+							return res.status(400).send({
+								success : false,
+								message : 'updated failed. Cek your name, and location'
+							});
+						}
 					} else {
-						return res.status(404).send({
-							success : false,
-							message : 'Data not found'
-						});
+						response(res, 'Data not found', null, null, 404);
 					}
-				});
+				} catch (err){
+					response(res,'Unexpected error', err, null, 500);
+				}
 			} else {
-				return res.status(400).send({
-					success : false,
-					message :'Bad request',
-					error : err
-				});
+				response(res, 'Bad request', err, null, 400);
 			}
-	
-    
 		}
 	});
 };
