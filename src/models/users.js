@@ -8,13 +8,26 @@ exports.countUser = (data, cb) =>{
 	});
 };
 
+exports.countUserAsyn = (data) => new Promise((resolve, reject) =>{
+	db.query(`SELECT COUNT(*) AS total FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'`, (err, res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
+
 exports.getUsers = (data, cb)=>{
-	let result = db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
+	db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
 		if (err) throw err;
 		cb(res);
 	});
-	console.log(result.sql);
 };
+
+exports.getUsersAsyn = (data) => new Promise((resolve, reject) =>{
+	db.query(`SELECT id, username, email, contact FROM users WHERE id LIKE '%${data.id}%' AND username LIKE '%${data.username}%'ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
 
 exports.getUser = (id, cb) =>{
 	let sql = `SELECT * FROM users

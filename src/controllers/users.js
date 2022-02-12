@@ -1,52 +1,38 @@
 /* eslint-disable no-unused-vars */
 const usersModel = require('../models/users');
 const helper = require('../helpers/helper');
+const { response } = require('../helpers/response');
 
 // error handling success
-const getUsers = (req, res) =>{
-	let {username, id, page, limit, orderBy, sortType} = req.query;
-	let validate = {id, page, limit};
-	let err = helper.validationInt(validate);
-	if (err.length <= 0){
-		page = parseInt(page) || 1;
-		limit = parseInt(limit) || 5;
-		orderBy = orderBy || 'id';
-		sortType = sortType || 'ASC';
-		let offset = ( page - 1 ) * 5;
-		username = username || '';
-		id = parseInt(id) || '';
-		let data = {id, username, offset, limit, orderBy, sortType};
-		usersModel.getUsers (data, results =>{
+const getUsers = async(req, res) =>{
+	try {
+		let {username, id, page, limit, orderBy, sortType} = req.query;
+		let validate = {id, page, limit};
+		let err = helper.validationInt(validate);
+		if (err.length <= 0){
+			page = parseInt(page) || 1;
+			limit = parseInt(limit) || 5;
+			orderBy = orderBy || 'id';
+			sortType = sortType || 'ASC';
+			let offset = ( page - 1 ) * limit;
+			username = username || '';
+			id = parseInt(id) || '';
+			let data = {id, username, offset, limit, orderBy, sortType};
+			const results = await usersModel.getUsersAsyn(data);
 			if (results.length > 0){
-				usersModel.countUser(data, count=>{
-					let {total} = count[0];
-					let last = Math.ceil(total/limit);
-					return res.json({
-						success : true,
-						message : 'List of users',
-						results : results,
-						pageInfo : {
-							prev : page > 1 ? `http://localhost:5000/users/?page=${page-1}` : null,
-							next : page < last ? `http://localhost:5000/users/?page=${page+1}` : null,
-							totalData : total,
-							lastPage : last
-						}
-					});
-				});
+				const count = await usersModel.countUserAsyn(data);
+				let {total} = count[0];
+				response(res, 'List of users', results, {limit, total, page});
 			} else {
-				return res.status(404).send({
-					success : false,
-					message : 'Data not found'
-				});
-			}	
-		});
-	} else {
-		return res.status(400).send({
-			success : false,
-			message : 'Bad request',
-			error : err
-		});
+				response(res, 'Data not found', null, null, 404);
+			}
+		} else {
+			response(res, 'Bad request', err, null, 400);
+		}
+	} catch (err){
+		response(res, 'Unexpected error', err, null, 500);
 	}
+	
 	
 };
 // postuser has been updated. handling error completed

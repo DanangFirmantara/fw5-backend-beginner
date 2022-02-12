@@ -26,7 +26,6 @@ const getVehicles = async(req,res) =>{
 			if(results.length > 0){
 				const count = await vehicleModel.countVehiclesAsyn(data);
 				const { total } = count[0];
-				const last = Math.ceil(total/limit);
 				response(res, 'List vehicles new', results,{limit, total, page});
 			} else {
 				response (res,'Data not found',null,null, 404);
