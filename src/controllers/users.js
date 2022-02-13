@@ -4,7 +4,6 @@ const helper = require('../helpers/helper');
 const { response } = require('../helpers/response');
 const bcrypt = require('bcrypt');
 
-// error handling success
 const getUsers = async(req, res) =>{
 	try {
 		let {username, id, page, limit, orderBy, sortType} = req.query;
@@ -35,10 +34,6 @@ const getUsers = async(req, res) =>{
 	}
 };
 
-// postuser has been updated. handling error completed
-// hanya bisa melakukan sign up
-// disni akan ada make password dan create hash for secure
-// input email, contact, dan password
 const postUsers = async(req, res)=>{
 	try{
 		let {username, contact, email, password} = req.body;
@@ -73,13 +68,10 @@ const deleteUser = async(req, res)=>{
 			id = parseInt(id) || 0;
 			const result = await usersModel.getUserAsyn(id);
 			if(result.length >0){
-				await usersModel.deleteUserAsyn(id);
+				await usersModel.asd(id);
 				response(res, 'Deleted successfully', result);
 			} else {
-				return res.status(404).send({
-					success : false,
-					message : 'Data not found'
-				});
+				response(res, 'Data not found');
 			}
 		} else {
 			response(res, 'Bad request', err, null, 400);
@@ -89,7 +81,6 @@ const deleteUser = async(req, res)=>{
 	}
 };
 
-//update handling error completed.
 const patchUser = async(req, res) =>{
 	try{
 		let {id} = req.query;
@@ -114,20 +105,15 @@ const patchUser = async(req, res) =>{
 					response(res, 'Data has been updated', final);
 				} else {
 					response(res, 'Bad request. Cek your id, username and email', null, null, 400);
-					
 				}
 			} else {
 				response(res, 'Data not found');
-			}
-			
+			}	
 		} else {
-			response(res, 'Bad request', err, null, 400);
-			
+			response(res, 'Bad request', err, null, 400);		
 		}
 	}catch (err) {
 		response(res, 'Unexpected error', err, null, 500);
 	}
-	
-	
 };
 module.exports = {getUsers, postUsers, deleteUser, patchUser};

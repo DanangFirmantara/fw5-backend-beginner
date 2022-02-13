@@ -6,5 +6,6 @@ route.use('/profiles', require('./profiles'));
 route.use('/list', require('./list'));
 route.use('/history',require('./history'));
 route.use('/popular', require('./popular'));
+route.use('/auth', require('./auth'));
 
 module.exports = route;

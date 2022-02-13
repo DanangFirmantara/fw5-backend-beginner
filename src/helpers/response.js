@@ -20,11 +20,12 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 		if(data.errno){
 			error = data;
 		} else {
+			// console.log(data.length)
 			results = data;
 			results.map(obj =>{
 				if(obj.image){
 					obj.image = APP_URL + '/' + obj.image;
-					
+
 				}
 			});
 		}

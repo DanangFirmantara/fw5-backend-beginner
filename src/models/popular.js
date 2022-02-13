@@ -1,11 +1,10 @@
 const db = require('../helpers/db');
 
 exports.countPopular = (data, cb) =>{
-	let result = db.query(`SELECT COUNT(*) as total FROM histories h LEFT JOIN vehicles V ON h.vehicleId = v.id WHERE v.location LIKE '%${data.location}%' GROUP BY h.vehicleId`, (err, res) =>{
+	db.query(`SELECT COUNT(*) as total FROM histories h LEFT JOIN vehicles V ON h.vehicleId = v.id WHERE v.location LIKE '%${data.location}%' GROUP BY h.vehicleId`, (err, res) =>{
 		if(err) throw err;
 		cb(res);
 	});
-	console.log(result.sql);
 };
 
 exports.getPopular = (data,cb) =>{
