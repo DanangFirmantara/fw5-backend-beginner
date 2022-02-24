@@ -13,7 +13,7 @@ const getList = async(req, res) =>{
 		let err = helper.validationInt(validate);
 		if (err.length <= 0){
 			page = parseInt(page) || 1;
-			limit = parseInt(limit) || 5;
+			limit = parseInt(limit) || 4;
 			orderBy = orderBy || 'id';
 			sortType = sortType || 'ASC';
 			let offset = (page - 1) * limit;

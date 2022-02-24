@@ -87,7 +87,7 @@ const postVehicle = (req,res) =>{
 						}
 					});
 					if(req.file){
-						data.image = req.file.path;
+						data.image = req.file.path.split('\\').join('/');
 					}
 					const results = await vehicleModel.searchVehiclesAsyn(data);
 					if (results.length <= 0){
@@ -96,7 +96,7 @@ const postVehicle = (req,res) =>{
 						response(res, 'Insert succesfully', final);
 					} else {
 						if(data.image){
-							fs.rm(data.image,{ recursive : true}, err =>{
+							fs.rm(data.image,{ recursive : false }, err =>{
 								if (err) {
 									response(res, 'Data not found', err, null, 500);
 								}
@@ -133,7 +133,8 @@ const patchVehicle = (req,res) =>{
 				}
 			});
 			if(req.file){
-				data.image = req.file.path;
+				console.log();
+				data.image = req.file.path.split('\\').join('/');
 			}
 			if (err.length <= 0){
 				id = parseInt(id) || 0;
@@ -152,7 +153,7 @@ const patchVehicle = (req,res) =>{
 										const final = await vehicleModel.getVehicleAsyn (id);
 										const processResult = final.map(obj=>{
 											if(obj.image !== null){
-												obj.image = `${APP_URL}/${obj.image}`;
+												obj.image = `${obj.image}`;
 											}
 											return obj;
 										});

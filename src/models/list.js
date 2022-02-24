@@ -9,11 +9,10 @@ exports.countList = (data, cb) =>{
 };
 
 exports.countListAsync = (data) => new Promise((resolve,reject) =>{
-	const result= db.query(`SELECT COUNT(*) AS total FROM vehicles WHERE category = '${data.filterBy}'`, (err, res) =>{
+	db.query(`SELECT COUNT(*) AS total FROM vehicles WHERE category = '${data.filterBy}'`, (err, res) =>{
 		if (err) reject(err);
 		resolve(res);
 	});
-	console.log(result.sql);
 });
 
 exports.getList = (data, cb) =>{
@@ -25,7 +24,7 @@ exports.getList = (data, cb) =>{
 };
 
 exports.getListAsync = (data) =>new Promise((resolve, reject) =>{
-	db.query(`SELECT name, description, location, category, status, price FROM vehicles WHERE category = '${data.filterBy}' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res) =>{
+	db.query(`SELECT * FROM vehicles WHERE category = '${data.filterBy}' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res) =>{
 		if (err) reject(err);
 		resolve(res);
 	});

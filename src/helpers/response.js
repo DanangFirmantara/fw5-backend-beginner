@@ -7,7 +7,6 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 	let success = true;
 	if(dataPage){
 		let {total, limit, page, url, route} = dataPage;
-		console.log(url);
 		const last = Math.ceil(total/limit);
 		pageInfo = {
 			prev : page > 1? `${APP_URL}/${route}?page=${page-1}&${url}` : null,
