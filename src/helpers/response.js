@@ -6,11 +6,12 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 	let error;
 	let success = true;
 	if(dataPage){
-		let {total, limit, page} = dataPage;
+		let {total, limit, page, url, route} = dataPage;
+		console.log(url);
 		const last = Math.ceil(total/limit);
 		pageInfo = {
-			prev : page > 1? `${APP_URL}/vehicles?page=${page-1}` : null,
-			next : page < last? `${APP_URL}/vehicles?page=${page+1}` : null,
+			prev : page > 1? `${APP_URL}/${route}?page=${page-1}&${url}` : null,
+			next : page < last? `${APP_URL}/${route}?page=${page+1}&${url}` : null,
 			totalData : total,
 			currentPage : page,
 			lastPage : last
@@ -20,7 +21,6 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 		if(data.errno){
 			error = data;
 		} else {
-			// console.log(data.length)
 			results = data;
 			results.map(obj =>{
 				if(obj.image){

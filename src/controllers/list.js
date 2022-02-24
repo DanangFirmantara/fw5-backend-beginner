@@ -1,51 +1,40 @@
+/* eslint-disable no-unused-vars */
 const listModel = require ('../models/list');
 const helper = require('../helpers/helper');
+const {dinamisUrl} = require('../helpers/dinamisUrl');
+const { response } = require('../helpers/response.js');
 
-const getList = (req, res) =>{
-	let {filterBy,page, limit, orderBy, sortType} = req.query;
-	let validate = {page, limit};
-	let err = helper.validationInt(validate);
-	if (err.length <= 0){
-		page = parseInt(page) || 1;
-		limit = parseInt(limit) || 5;
-		orderBy = orderBy || 'id';
-		sortType = sortType || 'ASC';
-		let offset = (page - 1) * limit;
-		let data = {filterBy, limit, offset, orderBy, sortType};
-		listModel.getList(data, results =>{
+const getList = async(req, res) =>{
+	try{
+		const route = 'list';
+		let {filterBy,page, limit, orderBy, sortType} = req.query;
+		let validate = {page, limit};
+		const url = dinamisUrl(req.query);
+		let err = helper.validationInt(validate);
+		if (err.length <= 0){
+			page = parseInt(page) || 1;
+			limit = parseInt(limit) || 5;
+			orderBy = orderBy || 'id';
+			sortType = sortType || 'ASC';
+			let offset = (page - 1) * limit;
+			let data = {filterBy, limit, offset, orderBy, sortType};
+			const results = await listModel.getListAsync(data);
+			// console.log(results.length);
 			if (results.length > 0){
-				listModel.counList(data, final =>{
-					const {total} = final[0];
-					let last = Math.ceil(total/limit);
-					return res.send({
-						success : true,
-						message : 'List vehicle',
-						results : results,
-						pageInfo : {
-							prev : page > 1 ? `http://localhost:5000/list?filterBy=Car&page=${page-1}`:null,
-							next : page < last ? `http://localhost:5000/list?filterBy=Car&page=${page+1}` : null,
-							total : total,
-							currentPage : page,
-							lastPage : last
-						}
-					});
-				});
+				const final = await listModel.countListAsync(data);
+				const {total} = final[0];
+				response(res, 'List Vehicles', results, {limit, page, total, url, route});
 				
 			} else {
-				return res.status(404).send({
-					success : false,
-					message : 'Data not found'
-				});
+				response(res, 'Data not found', null, null, 404);
 			}
-			
-		});
-	} else {
-		return res.status(400).send({
-			success : false,
-			message : 'Bad request.',
-			error : err
-		});
+		} else {
+			response(res,'Bad request', err, null, 400);
+		}
+	} catch (err){
+		response(res, 'Unexpected error', err, null, 500);
 	}
+
 	
 	
 };

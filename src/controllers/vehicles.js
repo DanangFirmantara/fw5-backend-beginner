@@ -5,12 +5,15 @@ const {APP_URL} = process.env;
 const upload = require('../helpers/upload').single('image');
 const fs = require('fs');
 const { response } = require('../helpers/response');
+const { dinamisUrl } = require('../helpers/dinamisUrl');
 
 // get vehicles succes error handling
 // check update
 const getVehicles = async(req,res) =>{
+	const route = 'vehicles';
 	let {name,id, location, page, limit, orderBy, sortType} = req.query;
 	let validate = {id, page, limit};
+	let url = dinamisUrl(req.query);
 	const err = helper.validationInt(validate);
 	if (err.length <= 0){
 		name = name || '';
@@ -27,7 +30,7 @@ const getVehicles = async(req,res) =>{
 			if(results.length > 0){
 				const count = await vehicleModel.countVehiclesAsyn(data);
 				const { total } = count[0];
-				response(res, 'List vehicles new', results,{limit, total, page});
+				response(res, 'List vehicles new', results,{limit, total, page, url,route});
 			} else {
 				response (res,'Data not found',null,null, 404);
 			}
