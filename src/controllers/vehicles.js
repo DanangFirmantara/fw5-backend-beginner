@@ -7,6 +7,7 @@ const fs = require('fs');
 const { response } = require('../helpers/response');
 
 // get vehicles succes error handling
+// check update
 const getVehicles = async(req,res) =>{
 	let {name,id, location, page, limit, orderBy, sortType} = req.query;
 	let validate = {id, page, limit};
