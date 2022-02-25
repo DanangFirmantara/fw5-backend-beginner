@@ -1,47 +1,37 @@
+/* eslint-disable no-unused-vars */
 const popularModel = require('../models/popular');
 const helper = require('../helpers/helper');
+const {dinamisUrl} = require('../helpers/dinamisUrl');
+const { response } = require('../helpers/response');
 
-const getPopular = (req, res) =>{
-	let {location, page, limit} = req.query;
-	let validate = {page, limit};
-	let err = helper.validationInt(validate);
-	if (err.length <= 0){
-		location = location || '';
-		page = parseInt(page) || 1;
-		limit = parseInt(limit) || 5;
-		let offset = (page - 1) * limit;
-		let data = {location, limit, offset};
-		popularModel.getPopular(data, results =>{
+const getPopular = async(req, res) =>{
+	try{
+		const route = 'popular';
+		let {location, page, limit} = req.query;
+		let validate = {page, limit};
+		const url = dinamisUrl(req.query);
+		let err = helper.validationInt(validate);
+		if (err.length <= 0){
+			location = location || '';
+			page = parseInt(page) || 1;
+			limit = parseInt(limit) || 4;
+			let offset = (page - 1) * limit;
+			let data = {location, limit, offset};
+			const results = await popularModel.getPopularAsync(data);
+			console.log(results);
 			if(results.length > 0){
-				popularModel.countPopular(data, final =>{
-					let {total} = final[0];
-					let last = Math.ceil(total/limit);
-					return res.send({
-						success : true,
-						message : 'List of Popular',
-						results : results,
-						pageInfo : {
-							prev : page > 1 ? `http://localhost:5000/popular/?page=${page-1}` : null,
-							next : page < last ? `http://localhost:5000/popular/?page=${page+1}` : null,
-							total : total,
-							currentPage : page,
-							lastPage : last
-						}
-					});
-				});
+				const final = await popularModel.countPopularAsync(data);
+				let {total} = final[0];
+				response(res,'List Popular', results, {total, page, limit,route, url});
 			} else {
-				return res.status(404).send({
-					success : false,
-					message : 'Data not found'
-				});
+				response(res, 'Data not found', null, null, 404);
+			
 			}
-		});
-	} else {
-		return res.status(400).send ({
-			success : false,
-			message : 'Bad request',
-			error : err
-		});
+		} else {
+			response(res,'Bad request',err, null, 400);
+		}
+	} catch (err){
+		response(res, 'Unexpected error', err, null, 500);
 	}
 };
 
