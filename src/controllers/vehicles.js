@@ -20,8 +20,8 @@ const getVehicles = async(req,res) =>{
 		id = parseInt(id) || '';
 		location = location || '';
 		page = parseInt(page) || 1;
-		limit = parseInt(limit) || 5;
-		orderBy = orderBy || 'location';
+		limit = parseInt(limit) || 4;
+		orderBy = orderBy || 'name';
 		sortType = sortType || 'ASC';
 		let offset = ( page-1 ) *limit;
 		let data = {name, id, location, offset, limit, orderBy, sortType};
