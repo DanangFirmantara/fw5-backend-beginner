@@ -75,8 +75,6 @@ exports.forgotRequest = async(req, res)=>{
 					response(res, 'cek your email', null, null, 404);
 				}
 			}
-			
-
 		} else{
 			if( password && confirmPassword){
 				if(password == confirmPassword){
