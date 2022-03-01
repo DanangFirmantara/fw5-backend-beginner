@@ -38,7 +38,7 @@ exports.getUser = (id, cb) =>{
 };
 
 exports.getUserAsyn = (id) => new Promise((resolve, reject) =>{
-	db.query ('SELECT * FROM users WHERE id=?',[id], (err, res) =>{
+	db.query ('SELECT id, email, username, contact, fullName, gender, address, displayName, birthDate FROM users WHERE id=?',[id], (err, res) =>{
 		if (err) reject(err);
 		resolve(res);
 	});
@@ -96,6 +96,13 @@ exports.searchUser = (data,cb)=>{
 exports.searchUserAsyn = (data) =>new Promise((resolve, reject) =>{
 	db.query(`SELECT id, username, email FROM users WHERE username = '${data.username}' AND email ='${data.email}'`, (err,res) =>{
 		if (err) reject(err);
+		resolve(res);
+	});
+});
+
+exports.getUserByEmailAsync = (email) =>new Promise((resolve, reject)=>{
+	db.query('SELECT id, email, username FROM users WHERE email = ?',[email],(err,res)=>{
+		if(err) reject(err);
 		resolve(res);
 	});
 });

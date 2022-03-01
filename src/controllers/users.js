@@ -67,11 +67,12 @@ const deleteUser = async(req, res)=>{
 		if (err.length <= 0){
 			id = parseInt(id) || 0;
 			const result = await usersModel.getUserAsyn(id);
+			console.log(result.length);
 			if(result.length >0){
-				await usersModel.asd(id);
+				await usersModel.deleteUserAsyn(id);
 				response(res, 'Deleted successfully', result);
 			} else {
-				response(res, 'Data not found');
+				response(res, 'Data not found', null, null, 404);
 			}
 		} else {
 			response(res, 'Bad request', err, null, 400);
