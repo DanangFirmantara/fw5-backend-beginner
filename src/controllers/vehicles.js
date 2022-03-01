@@ -133,7 +133,6 @@ const patchVehicle = (req,res) =>{
 				}
 			});
 			if(req.file){
-				console.log();
 				data.image = req.file.path.split('\\').join('/');
 			}
 			if (err.length <= 0){

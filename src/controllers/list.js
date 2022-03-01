@@ -19,7 +19,6 @@ const getList = async(req, res) =>{
 			let offset = (page - 1) * limit;
 			let data = {filterBy, limit, offset, orderBy, sortType};
 			const results = await listModel.getListAsync(data);
-			// console.log(results.length);
 			if (results.length > 0){
 				const final = await listModel.countListAsync(data);
 				const {total} = final[0];

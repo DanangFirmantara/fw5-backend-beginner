@@ -13,7 +13,7 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 			next : page < last? `${APP_URL}/${route}?page=${page+1}&${url}` : null,
 			totalData : total,
 			currentPage : page,
-			lastPage : last
+			lastPage : last	
 		};
 	}
 	if (data){
