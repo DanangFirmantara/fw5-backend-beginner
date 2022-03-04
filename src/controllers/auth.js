@@ -22,7 +22,7 @@ exports.login = async(req, res) =>{
 			response(res, 'Cek your username, email, and password',null,null,400);
 		}	
 	} catch (err) {
-		response(res, 'Unexpected error', err, null, 500);
+		response(res, 'Cek your username, email, and password',null,null,400);
 	}
 };
 
@@ -32,10 +32,12 @@ exports.verify = async(req, res)=>{
 		const token = auth.split(' ')[1];
 		if(token){
 			try{
-				if(jwt.verify(token,APP_SECRET)){
-					response(res, 'User verified!');
+				const data = jwt.verify(token, APP_SECRET);
+				if(data){
+					req.userData = data;
+					response(res, 'user verified');
 				} else{
-					response(res, 'user not verified', null, null, 403);
+					response(res,'user not verified',null, null, 403);
 				}
 			} catch(err){
 				response(res, 'user not verified', null, null, 403);
@@ -50,13 +52,11 @@ exports.forgotRequest = async(req, res)=>{
 		if(!code){
 			const user = await userModel.getUserByEmailAsync(email);
 			const isExpired = await authModel.getRequest(user[0].id);
-			console.log(isExpired);
 			if(isExpired.length > 0){
 				response(res, 'code has been sent to your email');
 			} else{
 				if(user.length === 1){
 					const randomCode = Math.round(Math.random() * 1000000);
-					console.log(user[0].id);
 					const reset = await authModel.createRequest(user[0].id, randomCode);
 					if(reset.affectedRows >= 1){
 						const info = await mail.sendMail({
@@ -66,7 +66,6 @@ exports.forgotRequest = async(req, res)=>{
 							text: String(randomCode),
 							html : `<b> ${randomCode} </b>`
 						});
-						console.log(info.messageId);
 						response(res, 'Forgot password request has been sent to your email');
 					} else{
 						response(res, 'Unexpected error', null, null, 500);

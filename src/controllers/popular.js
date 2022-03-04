@@ -18,7 +18,6 @@ const getPopular = async(req, res) =>{
 			let offset = (page - 1) * limit;
 			let data = {location, limit, offset};
 			const results = await popularModel.getPopularAsync(data);
-			console.log(results);
 			if(results.length > 0){
 				const final = await popularModel.countPopularAsync(data);
 				let {total} = final[0];

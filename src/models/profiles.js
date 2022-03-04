@@ -6,3 +6,10 @@ exports.getProfiles = (id, cb) =>{
 		cb(res);
 	});
 };
+
+exports.getProfileAsync = (id) => new Promise((resolve, reject)=>{
+	db.query('SELECT id, fullName, displayName, email, contact , gender, address, birthDate, image FROM users WHERE id=?',[id],(err,res)=>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});

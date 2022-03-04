@@ -1,24 +1,18 @@
+const { response } = require('../helpers/response');
 const profilesModel = require ('../models/profiles');
 
-const getProfiles = (req, res) =>{
-	let {id} = req.query;
-	id = parseInt(id) || '';
-	profilesModel.getProfiles(id, results =>{
-		if(results.length > 0){
-			return res.send ({
-				success : true,
-				message : 'List profiles',
-				results : results
-			});
-		} else {
-			return res.status(404).send ({
-				success : false,
-				message : 'Data not found'
-			});
+const getProfiles = async(req, res) =>{
+	try{
+		let {id} = req.userData;
+		const results = await profilesModel.getProfileAsync(id);
+		if(results){
+			response(res, 'List profile', results);
+		} else{
+			response(res, 'data not found', null, null, 404);
 		}
-		
-	});
-	
+	} catch(err){
+		response(res, 'unexpected error', err, null, 500);
+	}
 };
 
 module.exports = {getProfiles};
