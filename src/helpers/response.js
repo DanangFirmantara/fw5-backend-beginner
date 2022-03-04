@@ -21,6 +21,7 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 			error = data;
 		} else {
 			results = data;
+			console.log(results);
 			results.map(obj =>{
 				if(obj.image){
 					obj.image = APP_URL + '/' + obj.image;

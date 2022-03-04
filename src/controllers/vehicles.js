@@ -143,11 +143,9 @@ const patchVehicle = (req,res) =>{
 						const result = await vehicleModel.searchVehiclesAsyn(data);
 						if (result.length > 0){
 							if (result[0].id == id){
-								fs.rm(results[0].image,{ recursive : true }, async err =>{
+								if(!(results[0].image)){results[0].image='default.jpg';}
+								fs.rm(results[0].image,{ recursive : false } , async(err) =>{
 									try {
-										if (err) {
-											response(res, 'File not found', err, null, 500);
-										}
 										const resultUpdate = await vehicleModel.patchVehicleAsyn(id, data);
 										const final = await vehicleModel.getVehicleAsyn (id);
 										const processResult = final.map(obj=>{
