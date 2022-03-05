@@ -36,7 +36,6 @@ const getUsers = async(req, res) =>{
 
 const postUsers = async(req, res)=>{
 	try{
-		console.log(req.body);
 		let {username, email, password} = req.body;
 		let fillable = ['username', 'email', 'password'];
 		fillable.forEach(obj => {
@@ -68,7 +67,6 @@ const deleteUser = async(req, res)=>{
 		if (err.length <= 0){
 			id = parseInt(id) || 0;
 			const result = await usersModel.getUserAsyn(id);
-			console.log(result.length);
 			if(result.length >0){
 				await usersModel.deleteUserAsyn(id);
 				response(res, 'Deleted successfully', result);
@@ -86,6 +84,7 @@ const deleteUser = async(req, res)=>{
 const patchUser = async(req, res) =>{
 	try{
 		let {id} = req.query;
+		console.log(req.body);
 		let validate = {id};
 		let err = helper.validationInt(validate);
 		if (err.length <= 0){
@@ -115,7 +114,7 @@ const patchUser = async(req, res) =>{
 			response(res, 'Bad request', err, null, 400);		
 		}
 	}catch (err) {
-		response(res, 'Unexpected error', err, null, 500);
+		response(res, 'Unexpected error', null, null, 500);
 	}
 };
 module.exports = {getUsers, postUsers, deleteUser, patchUser};
