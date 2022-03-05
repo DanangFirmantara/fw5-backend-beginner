@@ -36,8 +36,9 @@ const getUsers = async(req, res) =>{
 
 const postUsers = async(req, res)=>{
 	try{
-		let {username, contact, email, password} = req.body;
-		let fillable = ['username', 'contact', 'email', 'password'];
+		console.log(req.body);
+		let {username, email, password} = req.body;
+		let fillable = ['username', 'email', 'password'];
 		fillable.forEach(obj => {
 			if(!req.body[obj]){
 				response(res, 'Bad request. username, contact, email, password must be fill', null, null, 400);
@@ -45,14 +46,14 @@ const postUsers = async(req, res)=>{
 		});
 		const saltRounds = 10;
 		password = await bcrypt.hash(password, saltRounds);
-		let data = {username, contact, email, password}; 
+		let data = {username, email, password}; 
 		const result = await usersModel.searchUserAsyn(data);
 		if(result.length <= 0){
 			const results = await usersModel.postUserAsyn(data);
 			const final = await usersModel.getUserAsyn(results.insertId);
-			response(res, 'Inserted successfully', final);
+			response(res, 'Sign up successfully', final);
 		} else {
-			response(res, 'Insert failed. Data has been input');
+			response(res, 'Sign up failed. Data has been input',null,null,400);
 		}
 	} catch(err){
 		response(res, 'Unexpected error', err, null, 500);

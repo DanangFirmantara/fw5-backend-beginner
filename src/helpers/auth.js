@@ -4,7 +4,7 @@ const {APP_SECRET} = process.env;
 
 exports.verify = async(req, res, next)=>{
 	const auth = req.headers.authorization;
-	if (auth.startsWith('Bearer')){
+	if (auth && auth.startsWith('Bearer')){
 		const token = auth.split(' ')[1];
 		if(token){
 			try{
@@ -22,5 +22,7 @@ exports.verify = async(req, res, next)=>{
 		} else{
 			response(res, 'User not verified', null, null, 403);
 		}
+	} else{
+		response(res, 'user not verified',null,null,403);
 	}
 };
