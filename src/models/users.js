@@ -37,6 +37,13 @@ exports.getUser = (id, cb) =>{
 	});
 };
 
+exports.getUserAsync = (id)=> new Promise((resolve, reject)=>{
+	db.query ('SELECT * FROM users WHERE id=?',[id], (err, res) =>{
+		if (err) reject(err);
+		resolve(res);
+	});
+});
+
 exports.getUserAsyn = (id) => new Promise((resolve, reject) =>{
 	db.query ('SELECT id, email, username, contact, fullName, gender, address, displayName, birthDate FROM users WHERE id=?',[id], (err, res) =>{
 		if (err) reject(err);
