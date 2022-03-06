@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const historyModel = require ('../models/history');
 const usersModel = require ('../models/users');
 const vehicleModel = require ('../models/vehicles');
@@ -34,6 +33,37 @@ const getHistory = async(req, res) =>{
 	} catch(err){
 		response(res, 'Unexpected error', err, null, 500);
 	}
+};
+
+const getHistoryUser = async(req, res)=>{
+	try{
+		let {page, limit, orderBy,userId, sortType} = req.query;
+		let validate = {userId,page, limit};
+		let err = helper.validationInt(validate);
+		const url = dinamisUrl(req.query);
+		if(err.length == 0){
+			userId = userId|| 0;
+			page = parseInt(page) || 1;
+			limit = limit || 5;
+			sortType = sortType || 'ASC';
+			orderBy = orderBy || 'vehicleId';
+			const offset = ( page - 1 ) * limit; 
+			const data = {offset, limit, orderBy, userId, sortType};
+			const results = await historyModel.getHistoryUserAsync(data);
+			if(results.length > 0){
+				const count = await historyModel.countHistoryUserAsync(data);
+				const {total} = count[0];
+				response(res, 'List of history user', results,{total, limit, page, route:'history/user', url});
+			} else {
+				response(res, 'Data not found',null, null, 404);
+			}
+		} else{
+			response(res, 'Bad request', err,null,400);
+		}		
+	} catch(err){
+		response(res, 'Unexpected error', err, null, 500);
+	}
+	
 };
 
 //postHistory completed with handling error
@@ -137,4 +167,4 @@ const patchHistory = async(req, res) =>{
 	}
 };
 
-module.exports = {getHistory, postHistory, deleteHistory, patchHistory};
+module.exports = {getHistory, getHistoryUser, postHistory, deleteHistory, patchHistory};

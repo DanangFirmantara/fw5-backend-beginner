@@ -1,7 +1,8 @@
 const history = require('express').Router();
-const {getHistory, postHistory, deleteHistory, patchHistory} = require('../controllers/history');
+const {getHistory,getHistoryUser, postHistory, deleteHistory, patchHistory} = require('../controllers/history');
 
 history.get('/', getHistory);
+history.get('/user/', getHistoryUser);
 history.post('/', postHistory);
 history.delete('/', deleteHistory);
 history.patch('/', patchHistory);
