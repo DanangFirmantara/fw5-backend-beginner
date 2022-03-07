@@ -11,7 +11,6 @@ exports.verify = async(req, res, next)=>{
 				const data = jwt.verify(token, APP_SECRET);
 				req.userData = data;
 				if(data){
-					console.log(data);
 					return next();
 				} else{
 					response(res,'user not verified',null, null, 403);

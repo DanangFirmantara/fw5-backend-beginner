@@ -14,7 +14,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/vehicles?location=yog&orderBy=category&sortType=DESC",
+							"raw": "{{baseURL}}/vehicles?id=47",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -24,21 +24,21 @@
 							"query": [
 								{
 									"key": "name",
-									"value": "",
+									"value": "family",
 									"disabled": true
 								},
 								{
 									"key": "id",
-									"value": "44",
-									"disabled": true
+									"value": "47"
 								},
 								{
 									"key": "location",
-									"value": "yog"
+									"value": "yogyakarta",
+									"disabled": true
 								},
 								{
 									"key": "page",
-									"value": "1",
+									"value": "5",
 									"disabled": true
 								},
 								{
@@ -49,12 +49,19 @@
 								{
 									"key": "orderBy",
 									"value": "category",
-									"description": "stock, location, price, category"
+									"description": "stock, location, price, category",
+									"disabled": true
 								},
 								{
 									"key": "sortType",
 									"value": "DESC",
-									"description": "ASC, DESC"
+									"description": "ASC, DESC",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
 								}
 							]
 						}
@@ -162,14 +169,14 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Yamaha Vixion R",
+									"value": "family bike",
 									"description": "important",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/D:/Local Disk/Fazztrack/minggu 3/asset for vehicle rent/public/yamaha-vixion-r.png"
+									"src": "/D:/Local Disk/Fazztrack/assets/familyBike.png"
 								},
 								{
 									"key": "location",
@@ -204,12 +211,13 @@
 								{
 									"key": "category",
 									"value": "Motorbike",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:5000/vehicles?id=71",
+							"raw": "http://localhost:5000/vehicles?id=42",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -221,7 +229,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "71"
+									"value": "42"
 								}
 							]
 						}
@@ -239,7 +247,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/users/",
+							"raw": "http://localhost:5000/users/?page=2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -257,7 +265,7 @@
 								},
 								{
 									"key": "id",
-									"value": "1",
+									"value": "85",
 									"disabled": true
 								},
 								{
@@ -279,8 +287,7 @@
 								},
 								{
 									"key": "page",
-									"value": "1",
-									"disabled": true
+									"value": "2"
 								}
 							]
 						}
@@ -297,22 +304,23 @@
 							"urlencoded": [
 								{
 									"key": "username",
-									"value": "admin",
+									"value": "dinda",
 									"type": "default"
 								},
 								{
 									"key": "contact",
-									"value": "082932832345",
-									"type": "default"
+									"value": "081232230986",
+									"type": "default",
+									"disabled": true
 								},
 								{
 									"key": "email",
-									"value": "gimivig886@plexfirm.com",
+									"value": "dinda@gmail.com",
 									"type": "default"
 								},
 								{
 									"key": "password",
-									"value": "admin",
+									"value": "dinda",
 									"type": "default"
 								}
 							]
@@ -338,7 +346,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/users/?id=89",
+							"raw": "http://localhost:5000/users/?id=94",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -351,7 +359,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "89"
+									"value": "94"
 								}
 							]
 						}
@@ -368,13 +376,13 @@
 							"urlencoded": [
 								{
 									"key": "username",
-									"value": "danang",
+									"value": "fajri",
 									"description": "important",
 									"type": "text"
 								},
 								{
 									"key": "fullName",
-									"value": "Danang firmantara",
+									"value": "Fajri saja",
 									"type": "text"
 								},
 								{
@@ -384,7 +392,7 @@
 								},
 								{
 									"key": "email",
-									"value": "danang@gmail.com",
+									"value": "fajri@mail.com",
 									"description": "important",
 									"type": "text"
 								},
@@ -401,17 +409,19 @@
 								{
 									"key": "displayName",
 									"value": "Danang",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "birthDate",
 									"value": "1999-05-09",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:5000/users/?id=88",
+							"raw": "http://localhost:5000/users/?id=96",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -424,8 +434,26 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "88"
+									"value": "96"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT PASSWORD",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/editPassword",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"editPassword"
 							]
 						}
 					},
@@ -442,7 +470,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/history/?id=",
+							"raw": "{{baseURL}}/history/",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -453,7 +481,28 @@
 							"query": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "4",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "sortType",
+									"value": null,
+									"disabled": true
 								}
 							]
 						}
@@ -470,22 +519,22 @@
 							"urlencoded": [
 								{
 									"key": "rentStartDate",
-									"value": "2022-01-02",
+									"value": "2022-03-02",
 									"type": "default"
 								},
 								{
 									"key": "rentEndDate",
-									"value": "2022-01-03",
+									"value": "2022-03-04",
 									"type": "default"
 								},
 								{
 									"key": "prepayment",
-									"value": "1",
+									"value": "0",
 									"type": "default"
 								},
 								{
 									"key": "userId",
-									"value": "67",
+									"value": "96",
 									"type": "default"
 								},
 								{
@@ -495,7 +544,7 @@
 								},
 								{
 									"key": "quantity",
-									"value": "1",
+									"value": "3",
 									"type": "default"
 								},
 								{
@@ -507,13 +556,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{baseURL}}/history/",
+							"raw": "{{baseURL}}/history",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
-								"history",
-								""
+								"history"
 							]
 						}
 					},
@@ -525,7 +573,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/history/?id=1",
+							"raw": "{{baseURL}}/history/?id=42",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -536,7 +584,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "42"
 								}
 							]
 						}
@@ -554,12 +602,13 @@
 								{
 									"key": "quantity",
 									"value": "0",
+									"description": "dikarenakan mengembalikan tentu nilai quantity harus bernilai 0, end point ini berfungsi hanya untuk mengembalikan produk",
 									"type": "default"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{baseURL}}/history/?id=27",
+							"raw": "{{baseURL}}/history/?id=38",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -570,7 +619,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "27"
+									"value": "38"
 								}
 							]
 						}
@@ -581,7 +630,43 @@
 					"name": "GET HISTORY USER",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/history/user/?userId=91&limit=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"history",
+								"user",
+								""
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "91"
+								},
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "id",
+									"disabled": true
+								},
+								{
+									"key": "sortType",
+									"value": "DESC",
+									"disabled": true
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -596,18 +681,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/profiles?id=",
+							"raw": "{{baseURL}}/profiles",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"profiles"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": ""
-								}
 							]
 						}
 					},
@@ -638,7 +717,24 @@
 								},
 								{
 									"key": "page",
-									"value": "",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "location",
+									"description": "id, name, location, etc",
+									"disabled": true
+								},
+								{
+									"key": "sortType",
+									"value": "Desc",
+									"description": "ASC, DESC",
 									"disabled": true
 								}
 							]
@@ -652,7 +748,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/list?filterBy=Motorbike",
+							"raw": "{{baseURL}}/list?filterBy=Motorbike&page&limit",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -663,6 +759,14 @@
 								{
 									"key": "filterBy",
 									"value": "Motorbike"
+								},
+								{
+									"key": "page",
+									"value": null
+								},
+								{
+									"key": "limit",
+									"value": null
 								}
 							]
 						}
@@ -703,22 +807,25 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/popular/?page=3&limit=1",
+							"raw": "http://localhost:5000/popular",
+							"protocol": "http",
 							"host": [
-								"{{baseURL}}"
+								"localhost"
 							],
+							"port": "5000",
 							"path": [
-								"popular",
-								""
+								"popular"
 							],
 							"query": [
 								{
 									"key": "page",
-									"value": "3"
+									"value": "3",
+									"disabled": true
 								},
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "1",
+									"disabled": true
 								}
 							]
 						}
@@ -836,12 +943,12 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "gimivig886@plexfirm.com",
+									"value": "bevad56184@ishop2k.com",
 									"type": "default"
 								},
 								{
 									"key": "code",
-									"value": "254522",
+									"value": "234841",
 									"type": "default"
 								},
 								{

@@ -116,4 +116,42 @@ const patchUser = async(req, res) =>{
 		response(res, 'Unexpected error', null, null, 500);
 	}
 };
-module.exports = {getUsers, postUsers, deleteUser, patchUser};
+
+const patchUserEditPassword = async(req,res)=>{
+	try{
+		const {id} = req.userData;
+		const {oldPassword, newPassword, newPasswordConfirm} = req.body;
+		const data = {oldPassword, newPassword, newPasswordConfirm};
+		const result = await usersModel.getUserEditPasswordAsync(id);
+		if(result.length == 1){
+			const results = await bcrypt.compare(data.oldPassword, result[0].password);
+			if(results){
+				if(newPassword == newPasswordConfirm){
+					if(newPassword != oldPassword){
+						const salt = await bcrypt.genSalt(10);
+						const hash = await bcrypt.hash(newPassword,salt);
+						const cek = await bcrypt.compare(newPassword, hash);
+						await usersModel.patchUserAsyn(id, { password : hash});
+						response(res, 'succesfully update password');
+					} else{
+						response(res, 'Old Password and New password must be difference', null, null, 400);
+					}
+					
+				} else {
+					response(res,'New Password and New Password Cofirm must be same', null, null, 400);
+				}	
+				
+			} else {
+				response(res, 'Check your old Password', null, null, 400);
+			}
+			
+		} else{
+			response(res, 'Data not found', null, null, 404);
+		}
+		
+	} catch(err){
+		response(res, 'Unexpected error', null, null, 500);
+	}
+	
+};
+module.exports = {getUsers, postUsers, deleteUser, patchUser, patchUserEditPassword};

@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-const { reject } = require('bcrypt/promises');
 const db = require('../helpers/db');
 
 exports.countUser = (data, cb) =>{
@@ -47,6 +45,13 @@ exports.getUserAsync = (id)=> new Promise((resolve, reject)=>{
 exports.getUserAsyn = (id) => new Promise((resolve, reject) =>{
 	db.query ('SELECT id, email, username, contact, fullName, gender, address, displayName, birthDate FROM users WHERE id=?',[id], (err, res) =>{
 		if (err) reject(err);
+		resolve(res);
+	});
+});
+
+exports.getUserEditPasswordAsync = (id)=> new Promise((resolve, reject)=>{
+	db.query ('SELECT id, password FROM users WHERE id = ?', [id], (err, res)=>{
+		if(err) reject(err);
 		resolve(res);
 	});
 });
