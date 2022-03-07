@@ -84,7 +84,6 @@ const deleteUser = async(req, res)=>{
 const patchUser = async(req, res) =>{
 	try{
 		let {id} = req.query;
-		console.log(req.body);
 		let validate = {id};
 		let err = helper.validationInt(validate);
 		if (err.length <= 0){

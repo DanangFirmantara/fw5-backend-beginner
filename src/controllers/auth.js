@@ -3,7 +3,7 @@ const { response } = require('../helpers/response');
 const authModel = require('../models/auth');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {APP_SECRET, APP_EMAIL} = process.env;
+const {APP_SECRET, APP_EMAIL, APP_FRONTEND_URL} = process.env;
 const userModel = require('../models/users');
 const mail = require('../helpers/mail');
 
@@ -64,7 +64,7 @@ exports.forgotRequest = async(req, res)=>{
 							to: email,
 							subject: 'Reset Your Password | Backend Beginner',
 							text: String(randomCode),
-							html : `<b> ${randomCode} </b>`
+							html : ` your code OTP is <b>${randomCode}</b> click <a href='${APP_FRONTEND_URL}/resetPassword'>link</a> to reset your password`
 						});
 						response(res, 'Forgot password request has been sent to your email');
 					} else{
@@ -85,7 +85,7 @@ exports.forgotRequest = async(req, res)=>{
 							await authModel.patchRequest(user[0].userId);
 							const update = await userModel.patchUserAsyn(user[0].userId,{ password : hash});
 							if(update.affectedRows > 0 ){
-								response(res, 'Update succesfully');
+								response(res, 'Your password has been reset');
 							} else{
 								response(res, 'Updated failed', null, null, 500);
 							}
