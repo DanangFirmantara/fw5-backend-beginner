@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 07 Mar 2022 pada 20.59
+-- Waktu pembuatan: 15 Mar 2022 pada 08.06
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.4.11
 
@@ -68,7 +68,8 @@ INSERT INTO `forgot_request` (`id`, `userId`, `code`, `isExpired`, `createdAt`, 
 (50, 99, 104721, 1, '2022-03-07 16:23:40', '2022-03-07 16:24:20'),
 (51, 99, 590365, 1, '2022-03-07 16:39:13', '2022-03-07 16:40:02'),
 (52, 99, 44977, 1, '2022-03-07 22:08:39', '2022-03-07 22:09:12'),
-(53, 99, 749396, 1, '2022-03-07 22:10:44', '2022-03-07 22:11:34');
+(53, 99, 749396, 1, '2022-03-07 22:10:44', '2022-03-07 22:11:34'),
+(54, 99, 172717, 1, '2022-03-08 11:31:27', '2022-03-08 11:32:18');
 
 -- --------------------------------------------------------
 
@@ -129,7 +130,14 @@ INSERT INTO `histories` (`id`, `rentStartDate`, `rentEndDate`, `prepayment`, `us
 (63, '2022-03-08', '2022-03-09', 0, 96, 30, 1, '2022-03-08 02:38:15', NULL),
 (64, '2022-03-08', '2022-03-09', 0, 96, 45, 1, '2022-03-08 02:42:45', NULL),
 (65, '2022-03-08', '2022-03-09', 0, 96, 45, 1, '2022-03-08 02:43:05', NULL),
-(66, '2022-03-08', '2022-03-10', 0, 96, 45, 1, '2022-03-08 02:58:22', NULL);
+(66, '2022-03-08', '2022-03-10', 0, 96, 45, 1, '2022-03-08 02:58:22', NULL),
+(67, '2022-03-08', '2022-03-09', 0, 99, 44, 0, '2022-03-08 10:02:05', NULL),
+(68, '2022-03-08', '2022-03-09', 0, 99, 41, 1, '2022-03-08 10:02:54', NULL),
+(69, '2022-03-08', '2022-03-09', 0, 99, 47, 1, '2022-03-08 10:05:04', NULL),
+(70, '2022-03-08', '2022-03-09', 0, 99, 42, 1, '2022-03-08 10:08:56', NULL),
+(71, '2022-03-08', '2022-03-09', 0, 99, 41, 1, '2022-03-08 10:17:21', NULL),
+(72, '2022-03-08', '2022-03-10', 0, 99, 42, 1, '2022-03-08 11:34:08', NULL),
+(73, '2022-03-08', '2022-03-09', 0, 99, 47, 1, '2022-03-08 11:45:26', NULL);
 
 --
 -- Trigger `histories`
@@ -228,9 +236,10 @@ INSERT INTO `users` (`id`, `username`, `email`, `contact`, `password`, `fullName
 (96, 'fajri', 'fajri@mail.com', '087898439385', '$2b$10$5G8U4okEmILCDAJUHEQ1q.MXuvNMOYZv6QadGp1XBPOURjZ7dGQdC', 'Fajri Azyumardi Tara', 'Male', 'Padang', NULL, NULL, NULL, '2022-03-05 13:08:36', '2022-03-08 01:21:38'),
 (97, 'putri', 'putri@mail.com', NULL, '$2b$10$HggkoXlyvl4wJztX8A34KOgqiixndj0hpkgXeZo771D4t3jiKuAY2', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 13:25:36', NULL),
 (98, 'joni', 'joni@mail.com', NULL, '$2b$10$cSZ8MVqdmdTbBNDwymlSYenSh8TrNYbobRM4Ut7MmKI4FuaEkwHHy', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 13:31:49', NULL),
-(99, 'raka', 'vesewo4643@ketchet.com', NULL, '$2b$10$ANrhbFdokhhqVHUkk3EDTut2WaG168sNleZ/7dJzj8puuHQT1kmSm', NULL, NULL, NULL, 'Raka Muhfi', NULL, NULL, '2022-03-07 14:39:04', '2022-03-07 22:46:54'),
+(99, 'raka', 'vesewo4643@ketchet.com', '081231237522', '$2b$10$kBUhW9KFenImIZWUo2zPFeKNAS4Fe8/bOcpJqeWpBEJX0f1KsS11G', 'raka ', NULL, NULL, 'Raka Muhfi', NULL, NULL, '2022-03-07 14:39:04', '2022-03-08 11:37:07'),
 (100, 'andi', 'andi@mail.com', NULL, '$2b$10$XVLYt3S5LlPosocKFh.gR.zt3LOKn4iLRNEKeCuPyueBsKfLqkdJq', 'Andi Renaldi', NULL, NULL, 'Andi Renaldi Noviaz', NULL, NULL, '2022-03-07 14:39:54', '2022-03-07 18:14:16'),
-(101, 'muhfi', 'muhfi@mail.com', NULL, '$2b$10$GtY7Hx84s9l4nbMPQ.FeB.werG3xaMrR7q8p9qh31iJ9Ws70usxKq', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-07 14:44:14', NULL);
+(101, 'muhfi', 'muhfi@mail.com', NULL, '$2b$10$GtY7Hx84s9l4nbMPQ.FeB.werG3xaMrR7q8p9qh31iJ9Ws70usxKq', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-07 14:44:14', NULL),
+(102, 'danang12', 'danang12@mail.com', NULL, '$2b$10$K94sLr63slJwWPYarFkdGeaNPROT9B1gbfK1wBzW.Do2LixJKddC6', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-08 11:29:34', NULL);
 
 -- --------------------------------------------------------
 
@@ -268,12 +277,12 @@ INSERT INTO `vehicles` (`id`, `category`, `name`, `location`, `description`, `pr
 (38, 'Car', 'Honda Jazz', 'Yogyakarta', 'Up to 4 adult, return before 4 PM', 350000, 'Available', 5, 'uploads/image-4-2-2022-680648005.png', '2022-02-07 08:42:02', '2022-03-04 20:13:21'),
 (39, 'Car', 'Daihatsu Xenia', 'Yogyakarta', 'Up to 4 adult, return before 4 PM', 300000, 'Available', 5, 'uploads/image-4-2-2022-371501686.png', '2022-02-07 08:42:32', '2022-03-04 20:16:07'),
 (40, 'Bike', 'Fixie', 'Yogyakarta', 'Up to 1 adult, return before 4 PM', 50000, 'Available', 5, 'uploads/image-4-2-2022-92552114.png', '2022-02-07 08:43:37', '2022-03-04 20:19:17'),
-(41, 'Bike', 'BMX', 'Yogyakarta', 'Up to 1 adult, return before 4 PM', 50000, 'Available', 5, 'uploads/image-4-2-2022-754005160.png', '2022-02-07 08:47:55', '2022-03-04 20:19:57'),
-(42, 'Bike', 'family bike', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 5, 'uploads/image-4-2-2022-999321599.png', '2022-02-07 08:48:47', '2022-03-04 20:20:27'),
+(41, 'Bike', 'BMX', 'Yogyakarta', 'Up to 1 adult, return before 4 PM', 50000, 'Available', 3, 'uploads/image-4-2-2022-754005160.png', '2022-02-07 08:47:55', '2022-03-08 10:17:21'),
+(42, 'Bike', 'family bike', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 3, 'uploads/image-4-2-2022-999321599.png', '2022-02-07 08:48:47', '2022-03-08 11:34:08'),
 (44, 'Motorbike', 'Honda Beat Street', 'Yogyakarta', 'Up to 2 Person, return before 4 PM', 40000, 'Available', 4, 'uploads/image-14-1-2022-739687107.png', '2022-02-07 08:58:44', '2022-02-14 23:39:00'),
-(45, 'Motorbike', 'Honda Scoopy', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 0, 'uploads/image-4-2-2022-868313119.png', '2022-02-07 08:59:42', '2022-03-08 02:58:22'),
+(45, 'Motorbike', 'Honda Scoopy', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'full booked', 0, 'uploads/image-4-2-2022-868313119.png', '2022-02-07 08:59:42', '2022-03-08 10:02:05'),
 (46, 'Motorbike', 'Yamaha FreeGo', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 4, 'uploads/image-4-2-2022-67911215.png', '2022-02-07 09:00:52', '2022-03-04 20:18:09'),
-(47, 'Motorbike', 'Honda Vario 125', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 3, 'uploads/image-4-2-2022-960063133.png', '2022-02-07 09:01:31', '2022-03-08 02:30:26'),
+(47, 'Motorbike', 'Honda Vario 125', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 1, 'uploads/image-4-2-2022-960063133.png', '2022-02-07 09:01:31', '2022-03-08 11:45:26'),
 (48, 'Car', 'Honda Jazz', 'Jakarta', 'Up to 4 adult, return before 4 PM', 500000, 'Available', 4, 'uploads/image-4-2-2022-727264533.png', '2022-02-08 20:24:11', '2022-03-04 20:13:52'),
 (49, 'Car', 'Honda Brio', 'Jakarta', 'Up to 4 adult, return before 4 PM', 300000, 'Available', 4, NULL, '2022-02-08 21:19:06', '2022-02-25 15:51:31'),
 (69, 'Motorbike', 'Yamaha Nmax', 'Yogyakarta', 'Up to 2 adult, return before 4 PM', 50000, 'Available', 3, 'uploads/image-14-1-2022-197474077.png', '2022-02-12 23:28:02', '2022-03-06 20:44:40'),
@@ -325,13 +334,13 @@ ALTER TABLE `vehicles`
 -- AUTO_INCREMENT untuk tabel `forgot_request`
 --
 ALTER TABLE `forgot_request`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT untuk tabel `histories`
 --
 ALTER TABLE `histories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT untuk tabel `prepayment`
@@ -343,7 +352,7 @@ ALTER TABLE `prepayment`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT untuk tabel `vehicles`
