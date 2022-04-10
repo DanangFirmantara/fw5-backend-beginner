@@ -6,7 +6,7 @@ const getProfiles = async(req, res) =>{
 		let {id} = req.userData;
 		const results = await profilesModel.getProfileAsync(id);
 		if(results){
-			response(res, 'List profile', results);
+			response(res, 'profile', results);
 		} else{
 			response(res, 'data not found', null, null, 404);
 		}

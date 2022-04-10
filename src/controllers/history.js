@@ -4,6 +4,7 @@ const vehicleModel = require ('../models/vehicles');
 const helper = require('../helpers/helper');
 const { response } = require('../helpers/response');
 const { dinamisUrl } = require('../helpers/dinamisUrl');
+const reservationModel = require('../models/reservation');
 
 const getHistory = async(req, res) =>{
 	try{
@@ -69,11 +70,16 @@ const getHistoryUser = async(req, res)=>{
 //postHistory completed with handling error
 const postHistory = async(req, res) =>{
 	try{
-		let {rentStartDate, rentEndDate, prepayment, userId, vehicleId, quantity} = req.body;
-		let validate = {prepayment, userId, vehicleId, quantity};
+		let {rentStartDate, rentEndDate, vehicleId, quantity, idReservation} = req.body;
+		let validate =  {vehicleId, quantity, idReservation};
+		const userId = req.userData.id;
 		let err = helper.validationInt(validate);
 		if (err.length <= 0){
-			let data = {rentStartDate, rentEndDate, prepayment, userId, vehicleId, quantity};
+			let data = {rentStartDate, rentEndDate, userId, vehicleId, quantity, idReservation};
+			const reservation = await reservationModel.getReservation(idReservation);
+			if(reservation.length !== 1){
+				return response(res, 'id Reservation not found',null,null, 404);
+			}
 			const resultU = await usersModel.getUserAsync(userId);
 			if (resultU.length > 0){
 				const resultV = await vehicleModel.getVehicleAsyn(vehicleId);

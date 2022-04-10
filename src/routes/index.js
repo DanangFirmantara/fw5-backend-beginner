@@ -7,5 +7,6 @@ route.use('/list', require('./list'));
 route.use('/history',require('./history'));
 route.use('/popular', require('./popular'));
 route.use('/auth', require('./auth'));
+route.use('/reservation', require('./reservation'));
 
 module.exports = route;
