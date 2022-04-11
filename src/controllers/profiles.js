@@ -1,4 +1,4 @@
-const { response } = require('../helpers/response');
+const { responseHandler } = require('../helpers/responseHandler');
 const profilesModel = require ('../models/profiles');
 
 const getProfiles = async(req, res) =>{
@@ -6,12 +6,15 @@ const getProfiles = async(req, res) =>{
 		let {id} = req.userData;
 		const results = await profilesModel.getProfileAsync(id);
 		if(results){
-			response(res, 'profile', results);
+			return responseHandler(res, 200, 'profile', results);
+
 		} else{
-			response(res, 'data not found', null, null, 404);
+			return responseHandler(res, 404, 'Data not found');
+		
 		}
 	} catch(err){
-		response(res, 'unexpected error', err, null, 500);
+		return responseHandler( res, 500, 'unexpected error');
+		
 	}
 };
 
