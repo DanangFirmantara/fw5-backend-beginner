@@ -3,6 +3,9 @@ const usersModel = require('../models/users');
 const helper = require('../helpers/helper');
 const { response } = require('../helpers/response');
 const bcrypt = require('bcrypt');
+const { deleteFile } = require('../helpers/fileHandler');
+const { cloudPathToFileName } = require('../helpers/converter');
+const { responseHandler } = require('../helpers/responseHandler');
 
 const getUsers = async(req, res) =>{
 	try {
@@ -83,37 +86,45 @@ const deleteUser = async(req, res)=>{
 
 const patchUser = async(req, res) =>{
 	try{
-		let {id} = req.query;
-		let validate = {id};
-		let err = helper.validationInt(validate);
-		if (err.length <= 0){
-			let {fullName, gender, email, address, contact, displayName, birthDate, username} = req.body;
-			let data = {};
-			let fillable = ['fullName', 'gender', 'email', 'address', 'contact', 'displayName', 'birthDate', 'username'];
-			fillable.forEach(obj =>{
-				if(req.body[obj]){
-					data[obj] = req.body[obj];
-				}
-			});
-			id = parseInt(id) || 0;
-			const result = await usersModel.getUserAsyn(id);
-			if(result.length > 0){
-				const resultS = await usersModel.searchUserAsyn(data);
-				if(resultS[0].id == id){
-					const results = await usersModel.patchUserAsyn(id, data);
-					const final = await usersModel.getUserAsyn(id);
-					response(res, 'Data has been updated', final);
-				} else {
-					response(res, 'Bad request. Cek your id, username and email', null, null, 400);
-				}
-			} else {
-				response(res, 'Data not found');
-			}	
+		let id = req.userData.id;
+		console.log(id, 'ini idnya');
+		console.log(req.file.path, 'ini data file');
+		let {fullName, gender, address, contact, displayName, birthDate, email} = req.body;
+		let data = {};
+		let fillable = ['fullName', 'gender', 'email', 'address', 'contact', 'displayName', 'birthDate'];
+		fillable.forEach(obj =>{
+			if(req.body[obj]){
+				data[obj] = req.body[obj];
+			}
+		});
+		id = parseInt(id) || 0;
+		const result = await usersModel.getUserAsyn(id);
+		if(result.length === 1){
+			console.log(result[0]);
+			if(result[0].image){
+				const filename = cloudPathToFileName(result[0].image);
+				deleteFile(filename);
+			}
+			if (req.file) {
+				data.image = req.file.path;
+			}
+			console.log(data);
+			await usersModel.patchUserAsyn(id, data);
+			const final = await usersModel.getUserAsyn(id);
+			return responseHandler(res, 200, 'Data has been updated', final);
+			// return response(res, 'Data has been updated', final);
 		} else {
-			response(res, 'Bad request', err, null, 400);		
-		}
+			if (req.file) {
+				deleteFile(req.file.filename);
+			}
+			return response(res, 'Data not found',null,null,404);
+		}	
 	}catch (err) {
-		response(res, 'Unexpected error', null, null, 500);
+		if (req.file) {
+			deleteFile(req.file.filename);
+		}
+		console.log(err);
+		return response(res, 'Unexpected error', null, null, 500);
 	}
 };
 
