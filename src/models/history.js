@@ -22,7 +22,7 @@ exports.getHistories = (data, cb) =>{
 };
 
 exports.getHistoriesAsync = (data) => new Promise((resolve, reject)=>{
-	db.query(`SELECT id, rentStartDate, prepayment, userId, vehicleId, quantity FROM histories WHERE id LIKE'%${data.id}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
+	db.query(`SELECT id, rentStartDate, rentEndDate, userId, vehicleId, quantity, codePayment, total FROM histories WHERE id LIKE'%${data.id}%' ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err,res) =>{
 		if(err) reject(err);
 		resolve(res);
 	});
@@ -85,7 +85,7 @@ exports.patchHistoryAsync = (data) => new Promise((resolve, reject)=>{
 });
 
 exports.getHistoryUserAsync = (data)=>new Promise((resolve, reject)=>{
-	db.query(`SELECT h.id AS id, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.quantity, h.prepayment  FROM histories h  LEFT JOIN vehicles v ON h.vehicleId = v.id WHERE userId = ${data.userId} ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res)=>{
+	db.query(`SELECT h.id AS id, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.quantity, v.image as image, h.isPayment as status, h.codePayment FROM histories h  LEFT JOIN vehicles v ON h.vehicleId = v.id WHERE userId = ${data.userId} ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res)=>{
 		if (err) reject(err);
 		resolve(res);
 	});
@@ -94,6 +94,13 @@ exports.getHistoryUserAsync = (data)=>new Promise((resolve, reject)=>{
 exports.countHistoryUserAsync = (data) =>new Promise((resolve,reject)=>{
 	db.query(`SELECT COUNT(*) AS total FROM histories WHERE userId= ${data.userId} `, (err,res)=>{
 		if (err) reject(err);
+		resolve(res);
+	});
+});
+
+exports.finishPayment = (codePayment)=> new Promise((resolve, reject)=>{
+	db.query('UPDATE histories SET isPayment = 1 WHERE codePayment = ?', [codePayment], (err, res)=>{
+		if(err) reject(err);
 		resolve(res);
 	});
 });

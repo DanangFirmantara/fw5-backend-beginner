@@ -27,6 +27,12 @@ exports.response = (res, message,  data, dataPage=null, status=200)=>{
 					obj.image = APP_URL + '/' + obj.image;
 
 				}
+				if(obj.rentStartDate){
+					obj.rentStartDate = obj.rentStartDate.toISOString().slice(0, 10);
+				}
+				if(obj.rentEndDate){
+					obj.rentEndDate = obj.rentEndDate.toISOString().slice(0, 10);
+				}
 			});
 		}
 	}

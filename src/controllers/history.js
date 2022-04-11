@@ -5,6 +5,7 @@ const helper = require('../helpers/helper');
 const { response } = require('../helpers/response');
 const { dinamisUrl } = require('../helpers/dinamisUrl');
 const reservationModel = require('../models/reservation');
+const { payment } = require('../helpers/bookedCode');
 
 const getHistory = async(req, res) =>{
 	try{
@@ -38,8 +39,9 @@ const getHistory = async(req, res) =>{
 
 const getHistoryUser = async(req, res)=>{
 	try{
-		let {page, limit, orderBy,userId, sortType} = req.query;
-		let validate = {userId,page, limit};
+		let {page, limit, orderBy, sortType} = req.query;
+		let userId = req.userData.id;
+		let validate = {page, limit};
 		let err = helper.validationInt(validate);
 		const url = dinamisUrl(req.query);
 		if(err.length == 0){
@@ -54,7 +56,7 @@ const getHistoryUser = async(req, res)=>{
 			if(results.length > 0){
 				const count = await historyModel.countHistoryUserAsync(data);
 				const {total} = count[0];
-				response(res, 'List of history user', results,{total, limit, page, route:'history/user', url});
+				response(res, 'List of history user', results, {total, limit, page, route:'history/user', url});
 			} else {
 				response(res, 'Data not found',null, null, 404);
 			}
@@ -72,10 +74,20 @@ const postHistory = async(req, res) =>{
 	try{
 		let {rentStartDate, rentEndDate, vehicleId, quantity, idReservation} = req.body;
 		let validate =  {vehicleId, quantity, idReservation};
+		const diffInMs   = new Date(rentEndDate) - new Date(rentStartDate);
+		const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+		const vehicle = await vehicleModel.getVehicleAsyn(vehicleId);
+		if( vehicle.length !== 1){
+			return response(res, 'vehicle Id not found', null,null,  404);
+		}
+		console.log(vehicle[0].price);
+		console.log(diffInDays, quantity, vehicle[0].price);
+		const total = parseInt(diffInDays) * vehicle[0].price * parseInt(quantity);
+		const codePayment = payment();
 		const userId = req.userData.id;
 		let err = helper.validationInt(validate);
 		if (err.length <= 0){
-			let data = {rentStartDate, rentEndDate, userId, vehicleId, quantity, idReservation};
+			let data = {rentStartDate, rentEndDate, userId, vehicleId, quantity, idReservation, codePayment, total};
 			const reservation = await reservationModel.getReservation(idReservation);
 			if(reservation.length !== 1){
 				return response(res, 'id Reservation not found',null,null, 404);
@@ -173,4 +185,26 @@ const patchHistory = async(req, res) =>{
 	}
 };
 
-module.exports = {getHistory, getHistoryUser, postHistory, deleteHistory, patchHistory};
+const finishPayment = async(req, res)=>{
+	try{
+		const {id, total, codePayment} = req.body;
+		const history = await historyModel.getHistoryAsync(id);
+		if(history.length === 0 ){
+			return response(res, 'history not found');
+		}
+		console.log(parseInt(codePayment) !== history[0].codePayment);
+		if(parseInt(codePayment) !== history[0].codePayment){
+			return response(res, 'Check your payment code', null, null, 400);
+		}
+		if(parseInt(total) !== history[0].total){
+			return response(res,`you should pay ${history[0].total}`, null, null, 400);
+		}
+		await historyModel.finishPayment(codePayment);
+		const result = await historyModel.getHistoryAsync(id);
+		return response(res, 'Payment Success !', result, null, 200);
+	} catch(err){
+		return response(res, 'Unexpected error', err, null, 500);
+	}
+};
+
+module.exports = {getHistory, getHistoryUser, postHistory, deleteHistory, patchHistory, finishPayment};
