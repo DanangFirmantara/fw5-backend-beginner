@@ -85,7 +85,7 @@ exports.patchHistoryAsync = (data) => new Promise((resolve, reject)=>{
 });
 
 exports.getHistoryUserAsync = (data)=>new Promise((resolve, reject)=>{
-	db.query(`SELECT h.id AS id, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.quantity, v.image as image, h.isPayment as status, h.codePayment FROM histories h  LEFT JOIN vehicles v ON h.vehicleId = v.id WHERE userId = ${data.userId} ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res)=>{
+	db.query(`SELECT h.id AS id, v.name AS vehicleName, h.rentStartDate, h.rentEndDate, h.quantity, v.image as image, h.isPayment as status, h.codePayment, h.total	 FROM histories h  LEFT JOIN vehicles v ON h.vehicleId = v.id WHERE userId = ${data.userId} ORDER BY ${data.orderBy} ${data.sortType} LIMIT ${data.limit} OFFSET ${data.offset}`, (err, res)=>{
 		if (err) reject(err);
 		resolve(res);
 	});

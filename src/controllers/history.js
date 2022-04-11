@@ -80,8 +80,6 @@ const postHistory = async(req, res) =>{
 		if( vehicle.length !== 1){
 			return response(res, 'vehicle Id not found', null,null,  404);
 		}
-		console.log(vehicle[0].price);
-		console.log(diffInDays, quantity, vehicle[0].price);
 		const total = parseInt(diffInDays) * vehicle[0].price * parseInt(quantity);
 		const codePayment = payment();
 		const userId = req.userData.id;
