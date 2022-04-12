@@ -40,7 +40,7 @@ exports.getVehicle = (id, cb) =>{
 };
 
 exports.getVehicleAsyn = (id) => new Promise((resolve, reject) =>{
-	db.query ('SELECT id, name, price, description, status, location, stock, image FROM vehicles WHERE id = ?', [id],(err,res) =>{
+	db.query ('SELECT id, idCategory, name, price, description, status, idLocation, stock, image FROM vehicles WHERE id = ?', [id],(err,res) =>{
 		if (err) reject(err);
 		resolve(res);
 	});
@@ -98,7 +98,7 @@ exports.searchVehicles = (data,cb)=>{
 };
 
 exports.searchVehiclesAsyn = (data) => new Promise((resolve, reject) =>{
-	let sql = `SELECT id, name, location, image FROM vehicles WHERE name LIKE '%${data.name}%' AND location LIKE '${data.location}%'`;
+	let sql = `SELECT id, name, idLocation, image FROM vehicles WHERE name = '${data.name}' AND idLocation =${data.idLocation}`;
 	db.query(sql, (err,res) =>{
 		if (err) reject(err);
 		resolve(res);

@@ -87,8 +87,10 @@ const deleteUser = async(req, res)=>{
 const patchUser = async(req, res) =>{
 	try{
 		let id = req.userData.id;
-		console.log(id, 'ini idnya');
-		console.log(req.file.path, 'ini data file');
+		console.log(req.body);
+		if(req.file){
+			console.log( req.file);
+		}
 		let {fullName, gender, address, contact, displayName, birthDate, email} = req.body;
 		let data = {};
 		let fillable = ['fullName', 'gender', 'email', 'address', 'contact', 'displayName', 'birthDate'];

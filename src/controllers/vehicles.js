@@ -6,6 +6,11 @@ const upload = require('../helpers/upload').single('image');
 const fs = require('fs');
 const { response } = require('../helpers/response');
 const { dinamisUrl } = require('../helpers/dinamisUrl');
+const locationModel = require('../models/location');
+const { responseHandler } = require('../helpers/responseHandler');
+const categoryModel = require('../models/category');
+const { deleteFile } = require('../helpers/fileHandler');
+const { cloudPathToFileName } = require('../helpers/converter');
 
 // get vehicles succes error handling
 // check update
@@ -69,119 +74,129 @@ const deleteVehicle = async(req,res)=>{
 	
 };
 
-const postVehicle = (req,res) =>{
-	upload(req, res, async err =>{
-		try{
-			if(err){
-				response(res, err.message, null, null, 400);
-			} else {
-				let {name, location, description, price, status, stock, image, category} = req.body;
-				let validate = {price, stock};
-				let err = helper.validationInt(validate);
-				if(err.length <= 0){
-					let data = {};
-					const fillable = ['name', 'location', 'description', 'price', 'status', 'stock', 'category'];
-					fillable.forEach(obj =>{
-						if(req.body[obj]){
-							data[obj] = req.body[obj];
-						}
-					});
-					if(req.file){
-						data.image = req.file.path.split('\\').join('/');
-					}
-					const results = await vehicleModel.searchVehiclesAsyn(data);
-					if (results.length <= 0){
-						const result = await vehicleModel.postVehicleAsyn(data);
-						const final = await vehicleModel.getVehicleAsyn (result.insertId);
-						response(res, 'Insert succesfully', final);
-					} else {
-						if(data.image){
-							fs.rm(data.image,{ recursive : false }, err =>{
-								if (err) {
-									response(res, 'Data not found', err, null, 500);
-								}
-							});
-						}
-						response(res,'insert failed. name and location has been input', null, null, 400);	
-					}
-				} else {
-					response(res, 'Bad request', err, null, 400);
+const postVehicle = async(req,res) =>{
+	try{
+		let {name, idLocation, description, price, stock, idCategory} = req.body;
+		let validate = {price, stock};
+		let err = helper.validationInt(validate);
+		if(err.length <= 0){
+			let data = {};
+			const fillable = ['name', 'idLocation', 'description', 'price', 'stock', 'idCategory'];
+			fillable.forEach(obj =>{
+				if(req.body[obj]){
+					data[obj] = req.body[obj];
 				}
+			});
+			if (req.file) {
+				data.image = req.file.path;
 			}
-		} catch (err){
-			response(res, 'Unexpected error', err, null, 500);
+			if(data.stock > 0){
+				data.status = 'Available';
+			} else{
+				data.status = 'Full Booked';
+			}
+			const location = await locationModel.getLocation(idLocation);
+			if(location.length !== 1){
+				if (req.file) {
+					deleteFile(req.file.filename);
+				}
+				return responseHandler(res, 404, 'id Location not found');
+			}
+			const category = await categoryModel.getCategory(idCategory);
+			if(category.length !== 1){
+				if (req.file) {
+					deleteFile(req.file.filename);
+				}
+				return responseHandler(res, 404, 'Id Category not found');
+			}
+			const results = await vehicleModel.searchVehiclesAsyn(data);
+			if (results.length === 0){
+				const result = await vehicleModel.postVehicleAsyn(data);
+				const final = await vehicleModel.getVehicleAsyn (result.insertId);
+				return responseHandler(res, 200, 'Insert successfully', final);
+			} else {
+				if (req.file) {
+					deleteFile(req.file.filename);
+				}
+				return responseHandler(res, 400, 'insert failed. name and location has been input');	
+			}
+		} else {
+			if (req.file) {
+				deleteFile(req.file.filename);
+			}
+			return response(res, 'Bad request', err, null, 400);
 		}
-		
-	});
+	} catch (err){
+		if (req.file) {
+			deleteFile(req.file.filename);
+		}
+		return response(res, 'Unexpected error', err, null, 500);
+	}
 };
 
 //update success handling error
-const patchVehicle = (req,res) =>{
-	upload(req, res, async err=>{
-		if(err){
-			response(res, err.message, null,null, 400);
-		} else {
-			let {id} = req.query;
-			let {name, location, description, price, status, stock, image, category} = req.body;
-			let validate = {id, price, stock};
-			let err = helper.validationInt(validate);
-			let data = {};
-			let fillable = ['name', 'location', 'description', 'price', 'status', 'stock','category'];
-			fillable.forEach(o =>{
-				if(req.body[o]){
-					data[o] = req.body[o];
-				}
-			});
-			if(req.file){
-				data.image = req.file.path.split('\\').join('/');
+const patchVehicle = async(req,res) =>{
+	try{
+		let {id} = req.query;
+		let {name, idLocation, description, price, stock, image, idCategory} = req.body;
+		let validate = {id, price, stock};
+		let err = helper.validationInt(validate);
+		let data = {};
+		let fillable = ['name', 'idLocation', 'description', 'price', 'stock','idCategory'];
+		fillable.forEach(o =>{
+			if(req.body[o]){
+				data[o] = req.body[o];
 			}
-			if (err.length <= 0){
-				id = parseInt(id) || 0;
-				try{
-					const results = await vehicleModel.getVehicleAsyn(id);
-					if (results.length > 0){
-						const result = await vehicleModel.searchVehiclesAsyn(data);
-						if (result.length > 0){
-							if (result[0].id == id){
-								if(!(results[0].image)){results[0].image='default.jpg';}
-								fs.rm(results[0].image,{ recursive : false } , async(err) =>{
-									try {
-										const resultUpdate = await vehicleModel.patchVehicleAsyn(id, data);
-										const final = await vehicleModel.getVehicleAsyn (id);
-										const processResult = final.map(obj=>{
-											if(obj.image !== null){
-												obj.image = `${obj.image}`;
-											}
-											return obj;
-										});
-										response (res,'Data has been update', processResult);
-									} catch (err){
-										response(res,'Unexpected error', err, null, 500);
-									}
-								});
-							} else {
-								return res.status(400).send({
-									success : false,
-									message : 'updated failed. Cek your id'
-								});
-							}
-						} else {
-							return res.status(400).send({
-								success : false,
-								message : 'updated failed. Cek your name, and location'
-							});
-						}
-					} else {
-						response(res, 'Data not found', null, null, 404);
-					}
-				} catch (err){
-					response(res,'Unexpected error', err, null, 500);
-				}
-			} else {
-				response(res, 'Bad request', err, null, 400);
+		});
+		if (req.file) {
+			data.image = req.file.path;
+		}
+		if(data.stock){
+			if(data.stock> 0){
+				data.status = 'Available';
+			} else{
+				data.status = 'Full Booked';
 			}
 		}
-	});
+		if (err.length <= 0){
+			id = parseInt(id) || 0;
+			const results = await vehicleModel.getVehicleAsyn(id);
+			if (results.length === 1){
+				const result = await vehicleModel.searchVehiclesAsyn(data);
+				if (result.length < 2){
+					console.log(results[0]);
+					if(results[0].image){
+						const filename = cloudPathToFileName(results[0].image);
+						deleteFile(filename);
+					}
+					await vehicleModel.patchVehicleAsyn(id, data);
+					const final = await vehicleModel.getVehicleAsyn (id);
+					return responseHandler(res, 200, 'Data has been update', final);
+				} else {
+					if (req.file) {
+						deleteFile(req.file.filename);
+					}	
+					return responseHandler(res, 400, 'Updated failed, name and location has been input');
+				}
+			} else {
+				if (req.file) {
+					deleteFile(req.file.filename);
+				}
+				return responseHandler(res, 404, 'Data not found');
+			}
+		} else {
+			if (req.file) {
+				deleteFile(req.file.filename);
+			}
+			return responseHandler(res, 'Bad request', null, err);
+		}
+	} catch(err){
+		if (req.file) {
+			deleteFile(req.file.filename);
+		}
+		console.log(err);
+		return responseHandler(res, 500, 'Unexpected error', null, err);
+	}
 };
 
 
