@@ -22,16 +22,16 @@ const getList = async(req, res) =>{
 			if (results.length > 0){
 				const final = await listModel.countListAsync(data);
 				const {total} = final[0];
-				response(res, 'List Vehicles', results, {limit, page, total, url, route});
+				return response(res, 'List Vehicles', results, {limit, page, total, url, route});
 				
 			} else {
-				response(res, 'Data not found', null, null, 404);
+				return response(res, 'Data not found', null, null, 404);
 			}
 		} else {
-			response(res,'Bad request', err, null, 400);
+			return response(res,'Bad request', err, null, 400);
 		}
 	} catch (err){
-		response(res, 'Unexpected error', err, null, 500);
+		return response(res, 'Unexpected error', err, null, 500);
 	}
 
 	

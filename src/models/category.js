@@ -7,3 +7,10 @@ exports.getCategory = (id) => new Promise((resolve, reject)=>{
 		resolve(res);
 	});
 });
+
+exports.getCategories = () => new Promise((resolve, reject)=>{
+	db.query('SELECT id, name FROM category', (err, res)=>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});
