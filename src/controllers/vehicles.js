@@ -11,40 +11,45 @@ const { responseHandler } = require('../helpers/responseHandler');
 const categoryModel = require('../models/category');
 const { deleteFile } = require('../helpers/fileHandler');
 const { cloudPathToFileName } = require('../helpers/converter');
+const { pageInfo } = require('../helpers/pageInfo');
 
 // get vehicles succes error handling
 // check update
 const getVehicles = async(req,res) =>{
 	const route = 'vehicles';
-	let {name,id, location, page, limit, orderBy, sortType} = req.query;
+	let {name,id, idLocation, page, limit, orderBy, sortType} = req.query;
 	let validate = {id, page, limit};
 	let url = dinamisUrl(req.query);
 	const err = helper.validationInt(validate);
 	if (err.length <= 0){
 		name = name || '';
 		id = parseInt(id) || '';
-		location = location || '';
+		idLocation = idLocation || '';
 		page = parseInt(page) || 1;
 		limit = parseInt(limit) || 4;
 		orderBy = orderBy || 'name';
 		sortType = sortType || 'ASC';
 		let offset = ( page-1 ) *limit;
-		let data = {name, id, location, offset, limit, orderBy, sortType};
+		let data = {name, id, idLocation, offset, limit, orderBy, sortType};
 		try {
 			const results = await vehicleModel.getVehiclesAsyn(data);
 			if(results.length > 0){
 				const count = await vehicleModel.countVehiclesAsyn(data);
 				const { total } = count[0];
-				response(res, 'List vehicles new', results,{limit, total, page, url,route});
+				const url = dinamisUrl(req.query);
+				const route = 'vehicles';
+				const _pageInfo = pageInfo(total,limit, page, url, route);
+				return responseHandler(res, 200, 'List vehicles', results,null, _pageInfo );
+				// return response(res, 'List vehicles new', results,{limit, total, page, url,route});
 			} else {
-				response (res,'Data not found',null,null, 404);
+				return response (res,'Data not found',null,null, 404);
 			}
 		}
 		catch(err) {
-			response(res,'Unexpected input', err,null,500);
+			return response(res,'Unexpected input', err,null,500);
 		}
 	} else {
-		response (res,'Bad request',err,null, 400);
+		return response (res,'Bad request',err,null, 400);
 	}
 };
 

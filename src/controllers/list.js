@@ -3,6 +3,8 @@ const listModel = require ('../models/list');
 const helper = require('../helpers/helper');
 const {dinamisUrl} = require('../helpers/dinamisUrl');
 const { response } = require('../helpers/response.js');
+const { pageInfo } = require('../helpers/pageInfo');
+const { responseHandler } = require('../helpers/responseHandler');
 
 const getList = async(req, res) =>{
 	try{
@@ -22,7 +24,9 @@ const getList = async(req, res) =>{
 			if (results.length > 0){
 				const final = await listModel.countListAsync(data);
 				const {total} = final[0];
-				return response(res, 'List Vehicles', results, {limit, page, total, url, route});
+				const route = 'list';
+				const _pageInfo = pageInfo(total, limit, page, url,route );
+				return responseHandler(res, 200, 'List vehicles', results, null, _pageInfo);
 				
 			} else {
 				return response(res, 'Data not found', null, null, 404);
