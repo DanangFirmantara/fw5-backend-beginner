@@ -82,6 +82,10 @@ const deleteVehicle = async(req,res)=>{
 const postVehicle = async(req,res) =>{
 	try{
 		let {name, idLocation, description, price, stock, idCategory} = req.body;
+		console.log(req.body);
+		if(req.file){
+			console.log(req.file);
+		}
 		let validate = {price, stock};
 		let err = helper.validationInt(validate);
 		if(err.length <= 0){
