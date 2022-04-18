@@ -95,6 +95,12 @@ const postHistory = async(req, res) =>{
 				const resultV = await vehicleModel.getVehicleAsyn(vehicleId);
 				if(resultV.length > 0) {
 					if(parseInt(data.quantity) <= resultV[0].stock){
+						const stock = resultV[0].stock - parseInt(data.quantity);
+						if(stock === 0){
+							await vehicleModel.patchVehicleAsyn(vehicleId, {stock:stock, status:'full booked'});
+						}else{
+							await vehicleModel.patchVehicleAsyn(vehicleId, {stock:stock, status:'Available'});
+						}
 						const results = await historyModel.postHistoryAsync(data);
 						const final = await historyModel.getHistoryAsync(results.insertId);
 						response(res, 'Inserted history successfully', final);
@@ -131,6 +137,10 @@ const deleteHistory = async(req, res) =>{
 			id = parseInt(id) || 0;
 			const result = await historyModel.getHistoryAsync(id);
 			if (result.length > 0){
+				const vehicle = await vehicleModel.getVehicleAsyn(result[0].vehicleId);
+				const stock = result[0].quantity + vehicle[0].stock;
+				const data = {stock: stock, status: 'Available'};
+				await vehicleModel.patchVehicleAsyn(id, data);
 				await historyModel.deleteHistoryAsync(id);
 				response(res, 'Deleted Succesfully', result);
 			} else {
@@ -158,13 +168,15 @@ const patchHistory = async(req, res) =>{
 			const result = await historyModel.getHistoryAsync(id);
 			if(result.length > 0){
 				if (result[0].quantity > parseInt(quantity)){
+					const vehicle = await vehicleModel.getVehicleAsyn(result[0].vehicleId);
+					const stock = result[0].quantity + vehicle[0].stock - parseInt(quantity);
+					await vehicleModel.patchVehicleAsyn(result[0].vehicleId, {stock: stock, status : 'Available'});
 					await historyModel.patchHistoryAsync(data);
 					const final = await historyModel.getHistoryAsync(id);
 					response(res, 'Updated successfully', final);
 				}else {
 					response(res, 'You prohibited update your data. Bad request', null, null, 400);
 				}
-		
 			} else {
 				return res.status(404).send({
 					success : false,
