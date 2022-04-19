@@ -6,6 +6,8 @@ const { response } = require('../helpers/response');
 const { dinamisUrl } = require('../helpers/dinamisUrl');
 const reservationModel = require('../models/reservation');
 const { payment } = require('../helpers/bookedCode');
+const { responseHandler } = require('../helpers/responseHandler');
+const { pageInfo } = require('../helpers/pageInfo');
 
 const getHistory = async(req, res) =>{
 	try{
@@ -56,15 +58,17 @@ const getHistoryUser = async(req, res)=>{
 			if(results.length > 0){
 				const count = await historyModel.countHistoryUserAsync(data);
 				const {total} = count[0];
-				response(res, 'List of history user', results, {total, limit, page, route:'history/user', url});
+				const route = 'vehicles';
+				const _pageInfo = pageInfo(total,limit, page, url, route);
+				return responseHandler(res, 200, 'List vehicles', results,null, _pageInfo );
 			} else {
-				response(res, 'Data not found',null, null, 404);
+				return responseHandler(res, 404, 'Data not found');
 			}
 		} else{
-			response(res, 'Bad request', err,null,400);
+			return responseHandler(res, 400,'Bad request',null, err);
 		}		
 	} catch(err){
-		response(res, 'Unexpected error', err, null, 500);
+		return response(res, 'Unexpected error', err, null, 500);
 	}
 	
 };
