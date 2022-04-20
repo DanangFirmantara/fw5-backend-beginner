@@ -58,7 +58,7 @@ for documentation in postman you can import **VEHICLE-RENT-PROJECT.postman_colle
 
 - body in vehicle data `PATCH`, the body in vehicle `PATCH` is same with vehicle `POST` but in this endpoint you can set body only what you need.
 
-## users
+## Users Endpoint
 
 | Method     | API        | Remark                                                      |
 | ---------- | ---------- | ----------------------------------------------------------- |
@@ -100,7 +100,7 @@ for documentation in postman you can import **VEHICLE-RENT-PROJECT.postman_colle
 | displayName | `string` | input display name                                                         |
 | birthDate   | `date`   | input birth date, format yyyy-mm-dd                                        |
 
-## History
+## History Endpoint
 
 | Method     | API              | Remark                                                         |
 | ---------- | ---------------- | -------------------------------------------------------------- |
@@ -110,3 +110,125 @@ for documentation in postman you can import **VEHICLE-RENT-PROJECT.postman_colle
 | **DELETE** | /history?id=     | delete history by history id                                   |
 | **PATCH**  | /history?id=     | update data history. this endpoint only use for return vehicle |
 | **PATCH**  | /history/payment | update data isPayment from 0 to 1 in table histories           |
+
+### Query params and body history endpoint
+
+filter history data `GET`
+
+| Key      | Remark   | Description                                                          |
+| -------- | -------- | -------------------------------------------------------------------- |
+| page     | `number` | set page to result, default page = 1                                 |
+| limit    | `number` | set max limit to result, default limit = 5                           |
+| sortType | `string` | sort data by ASC or DESC. default sortType = ASC                     |
+| orderBy  | `string` | order data to result by column in table histories,default orderBy=id |
+
+body history data `POST`
+
+| Key           | Remark   | Description                                            |
+| ------------- | -------- | ------------------------------------------------------ |
+| rentStartDate | `date`   | input start date vehicle to booked , format yyyy-mm-dd |
+| rentEndDate   | `date`   | input end date vehicle to booked , format yyyy-mm-dd   |
+| vehicleId     | `number` | input vehicle id.                                      |
+| quantity      | `number` | input number of vehicle to rent                        |
+| idReservation | `number` | input id reservation                                   |
+
+body history data `PATCH`. this end point only use to return vehicle. quantity should be input how many vehicle in user after user return. example user will return all vehicle so it should be input **quantity=0**.
+
+| Key      | Remark   | Description           |
+| -------- | -------- | --------------------- |
+| quantity | `number` | update data quantity. |
+
+body history Finish payment `PATCH`.
+
+| Key         | Remark   | Description            |
+| ----------- | -------- | ---------------------- |
+| id          | `number` | set id user            |
+| total       | `number` | number user should pay |
+| codePayment | `number` | input code payment     |
+
+## Profile User Endpoint
+
+| Method  | API       | Remark                               |
+| ------- | --------- | ------------------------------------ |
+| **GET** | /profiles | get data profile user based on token |
+
+## List View Endpoint
+
+| Method  | API             | Remark                                             |
+| ------- | --------------- | -------------------------------------------------- |
+| **GET** | /list?filterBy= | get data filterby `1:car`, `2:motorbike`, `3:bike` |
+
+## AUTH Endpoint
+
+| Method   | API                 | Remark                           |
+| -------- | ------------------- | -------------------------------- |
+| **POST** | /auth/login         | Login user. it will return token |
+| **POST** | /auth/verify        | check is user verify             |
+| **POST** | /auth/forgotRequest | reset password user              |
+
+### Body history endpoint
+
+login endpoint `POST`
+
+| Key      | Remark   | Description    |
+| -------- | -------- | -------------- |
+| username | `string` | input username |
+| password | `string` | input password |
+
+forgot request `POST`. to use this endpoint the flow is. first you can fill only email. then in email you will get code otp. after that you should fill email,code, password, confirm password to reset your password
+
+| Key             | Remark   | Description                  |
+| --------------- | -------- | ---------------------------- |
+| email           | `string` | input email                  |
+| code            | `number` | input code OTP has been sent |
+| password        | `string` | input password               |
+| confirmPassword | `string` | input confirm password       |
+
+## Reservation Endpoint
+
+| Method   | API          | Remark             |
+| -------- | ------------ | ------------------ |
+| **POST** | /reservation | create reservation |
+
+### Body reservation endpoint
+
+| Key      | Remark   | Description                                                                              |
+| -------- | -------- | ---------------------------------------------------------------------------------------- |
+| idCard   | `number` | input your idcard to table reservation                                                   |
+| name     | `string` | input name to table reservation                                                          |
+| lastName | `string` | input lastName to table reservation                                                      |
+| contact  | `string` | input contact to table reservation                                                       |
+| email    | `string` | input email to table reservation                                                         |
+| payment  | `enum`   | input payment to table reservation. 1: prepayment, 2: paymeny at end, 3: partial payment |
+
+## Category Endpoint
+
+| Method  | API       | Remark            |
+| ------- | --------- | ----------------- |
+| **GET** | /category | get list category |
+
+## Location Endpoint
+
+| Method  | API       | Remark            |
+| ------- | --------- | ----------------- |
+| **GET** | /location | get list location |
+
+# Standard response by Postman
+
+```sh
+{
+   'success' : true,
+   'message' : 'message',
+   'pageInfo' : Object,
+   'results' : [Object],
+
+}
+```
+
+# Backend deploy with heroku
+
+[https://fw5-backend-beginnner.herokuapp.com](https://fw5-backend-beginnner.herokuapp.com)
+
+# Author
+
+[Danang Firmantara](https://github.com/DanangFirmantara)
