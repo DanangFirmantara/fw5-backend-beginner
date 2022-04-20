@@ -39,7 +39,6 @@ const getVehicles = async(req,res) =>{
 				const route = 'vehicles';
 				const _pageInfo = pageInfo(total,limit, page, url, route);
 				return responseHandler(res, 200, 'List vehicles', results,null, _pageInfo );
-				// return response(res, 'List vehicles new', results,{limit, total, page, url,route});
 			} else {
 				return response (res,'Data not found',null,null, 404);
 			}
