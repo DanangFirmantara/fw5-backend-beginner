@@ -1,8 +1,7 @@
 const users = require('express').Router();
 const { verify } = require('../helpers/auth');
-const uploadImage = require('../helpers/uploadCloudinary');
-
 const {getUsers, postUsers, deleteUser, patchUser, patchUserEditPassword} = require ('../controllers/users');
+const { uploadImage } = require('../helpers/upload');
 
 users.get('/', getUsers);
 users.post('/', postUsers);

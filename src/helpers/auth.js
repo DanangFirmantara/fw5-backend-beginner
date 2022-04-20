@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { response } = require('./response');
+const { responseHandler } = require('./responseHandler');
 const {APP_SECRET} = process.env;
+const userModel = require('../models/users');
 
 exports.verify = async(req, res, next)=>{
 	const auth = req.headers.authorization;
@@ -13,15 +15,29 @@ exports.verify = async(req, res, next)=>{
 				if(data){
 					return next();
 				} else{
-					response(res,'user not verified',null, null, 403);
+					return response(res,'user not verified',null, null, 403);
 				}
 			} catch(err){
-				response(res, 'user not verified', null, null, 403);
+				return response(res, 'user not verified', null, null, 403);
 			}
 		} else{
-			response(res, 'User not verified', null, null, 403);
+			return response(res, 'User not verified', null, null, 403);
 		}
 	} else{
-		response(res, 'user not verified',null,null,403);
+		return response(res, 'user not verified',null,null,403);
+	}
+};
+
+exports.verifyAdmin = async(req, res, next) =>{
+	try{
+		const {id} = req.userData;
+		const user = await userModel.getUserRole(id);
+		if(user[0].role === 'Admin'){
+			return next();
+		} else{
+			return responseHandler(res, 403, 'Unauthorized');
+		}
+	} catch(err){
+		return responseHandler(res, 500, 'Unexpected error');
 	}
 };

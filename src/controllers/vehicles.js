@@ -2,7 +2,6 @@
 const vehicleModel = require('../models/vehicles');
 const helper = require('../helpers/helper');
 const {APP_URL} = process.env;
-const upload = require('../helpers/upload').single('image');
 const fs = require('fs');
 const { response } = require('../helpers/response');
 const { dinamisUrl } = require('../helpers/dinamisUrl');
@@ -55,34 +54,34 @@ const getVehicles = async(req,res) =>{
 
 // error handling success except 1 condition when the id is null
 const deleteVehicle = async(req,res)=>{
-	let {id} = req.query;
-	let validate = {id};
-	let err = helper.validationInt(validate);
-	if(err.length <= 0 ){
-		id = parseInt(id) || 0;
-		const result = await vehicleModel.getVehicleAsyn(id);
-		if (result.length > 0){
-			const results = await vehicleModel.deleteVehicleAsyn(id);
-			fs.rm(result[0].image, { rescursive:false}, err =>{
-				if(err){
-					response(res, 'Data not found', err, null, 500);
+	try{
+		let {id} = req.query;
+		let validate = {id};
+		let err = helper.validationInt(validate);
+		if(err.length <= 0 ){
+			id = parseInt(id) || 0;
+			const result = await vehicleModel.getVehicleAsyn(id);
+			if (result.length === 1){
+				if(result[0].image){
+					const filename = cloudPathToFileName(result[0].image);
+					deleteFile(filename);
 				}
-				response(res,'Deleted successfully', result);
-				
-			});
+				await vehicleModel.deleteVehicleAsyn(id);
+				return responseHandler(res, 200, 'Deleted successfully', result[0]);
+			} else {
+				return responseHandler(res, 404, 'Data not found');
+			}
 		} else {
-			response(res, 'Data not found', null, null, 404);
+			return responseHandler(res, 400, 'Bad request', null, err);
 		}
-	} else {
-		response(res, 'Bad request', err, null, 400);
+	} catch(err){
+		return response(res, 'Unexpected error', err, null, 500);
 	}
-	
 };
 
 const postVehicle = async(req,res) =>{
 	try{
 		let {name, idLocation, description, price, stock, idCategory} = req.body;
-		console.log(req.body);
 		if(req.file){
 			console.log(req.file);
 		}
@@ -118,6 +117,7 @@ const postVehicle = async(req,res) =>{
 				}
 				return responseHandler(res, 404, 'Id Category not found');
 			}
+			console.log(data);
 			const results = await vehicleModel.searchVehiclesAsyn(data);
 			if (results.length === 0){
 				const result = await vehicleModel.postVehicleAsyn(data);

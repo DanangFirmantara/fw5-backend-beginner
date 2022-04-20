@@ -118,3 +118,10 @@ exports.getUserByEmailAsync = (email) =>new Promise((resolve, reject)=>{
 		resolve(res);
 	});
 });
+
+exports.getUserRole = (id) => new Promise((resolve, reject) =>{
+	db.query('SELECT role from users WHERE id = ?', [id], (err, res)=>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});

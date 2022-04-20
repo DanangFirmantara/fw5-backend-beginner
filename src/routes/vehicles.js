@@ -1,11 +1,11 @@
 const vehicles = require('express').Router();
 const {getVehicles, deleteVehicle, postVehicle, patchVehicle} = require('../controllers/vehicles');
-const { verify } = require('../helpers/auth');
-const uploadImage = require('../helpers/uploadCloudinary');
+const { verify, verifyAdmin } = require('../helpers/auth');
+const { uploadImage } = require('../helpers/upload');
 
 vehicles.get('/', getVehicles );
-vehicles.delete('/', deleteVehicle);
-vehicles.post('/',verify ,uploadImage('image'), postVehicle);
-vehicles.patch('/',verify ,uploadImage('image'),  patchVehicle);
+vehicles.delete('/',verify, verifyAdmin, deleteVehicle);
+vehicles.post('/',verify, verifyAdmin, uploadImage('image'), postVehicle);
+vehicles.patch('/',verify, verifyAdmin, uploadImage('image'),  patchVehicle);
 
 module.exports = vehicles;
