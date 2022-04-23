@@ -17,12 +17,12 @@ exports.login = async(req, res) =>{
 		if (result){
 			data = { id : resultLogin[0].id};
 			const token = jwt.sign(data, APP_SECRET);
-			response(res,'login successfully',[token]);
+			return response(res,'login successfully',[token]);
 		} else {
-			response(res, 'Cek your username, email, and password',null,null,400);
+			return response(res, 'Cek your username, email, and password',null,null,400);
 		}	
 	} catch (err) {
-		response(res, 'Cek your username, email, and password',null,null,400);
+		return response(res, 'Cek your username, email, and password',null,null,400);
 	}
 };
 
@@ -35,12 +35,12 @@ exports.verify = async(req, res)=>{
 				const data = jwt.verify(token, APP_SECRET);
 				if(data){
 					req.userData = data;
-					response(res, 'user verified');
+					return response(res, 'user verified');
 				} else{
-					response(res,'user not verified',null, null, 403);
+					return response(res,'user not verified',null, null, 403);
 				}
 			} catch(err){
-				response(res, 'user not verified', null, null, 403);
+				return response(res, 'user not verified', null, null, 403);
 			}
 		}
 	}
@@ -53,7 +53,7 @@ exports.forgotRequest = async(req, res)=>{
 			const user = await userModel.getUserByEmailAsync(email);
 			const isExpired = await authModel.getRequest(user[0].id);
 			if(isExpired.length > 0){
-				response(res, 'code has been sent to your email');
+				return response(res, 'code has been sent to your email');
 			} else{
 				if(user.length === 1){
 					const randomCode = Math.round(Math.random() * 1000000);
@@ -66,12 +66,12 @@ exports.forgotRequest = async(req, res)=>{
 							text: String(randomCode),
 							html : ` your code OTP is <b>${randomCode}</b> click <a href='${APP_FRONTEND_URL}/resetPassword'>link</a> to reset your password`
 						});
-						response(res, 'Forgot password request has been sent to your email');
+						return response(res, 'Forgot password request has been sent to your email');
 					} else{
-						response(res, 'Unexpected error', null, null, 500);
+						return response(res, 'Unexpected error', null, null, 500);
 					}
 				} else{
-					response(res, 'cek your email', null, null, 404);
+					return response(res, 'cek your email', null, null, 404);
 				}
 			}
 		} else{
@@ -85,26 +85,26 @@ exports.forgotRequest = async(req, res)=>{
 							await authModel.patchRequest(user[0].userId);
 							const update = await userModel.patchUserAsyn(user[0].userId,{ password : hash});
 							if(update.affectedRows > 0 ){
-								response(res, 'Your password has been reset');
+								return response(res, 'Your password has been reset');
 							} else{
-								response(res, 'Updated failed', null, null, 500);
+								return response(res, 'Updated failed', null, null, 500);
 							}
 						} else{
-							response(res, 'Code expired',null,null,400);
+							return response(res, 'Code expired',null,null,400);
 						}
 						
 					} else {
-						response(res,'Code invalid',null,null,400);
+						return response(res,'Code invalid',null,null,400);
 					}
 				} else {
-					response(res, 'password and confirm password must be same');
+					return response(res, 'password and confirm password must be same');
 				}
 			} else{
-				response(res, 'password and confirm password mandatory', null, null, 400);
+				return response(res, 'password and confirm password mandatory', null, null, 400);
 			}
 		}
 	} catch (err){
-		response(res, err.message, null,null,500);
+		return response(res, err.message, null,null,500);
 	}
 	
 };
