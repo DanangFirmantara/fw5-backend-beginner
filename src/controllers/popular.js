@@ -3,34 +3,35 @@ const popularModel = require('../models/popular');
 const helper = require('../helpers/helper');
 const {dinamisUrl} = require('../helpers/dinamisUrl');
 const { response } = require('../helpers/response');
-
+const { pageInfo } = require('../helpers/pageInfo');
+const { responseHandler } = require('../helpers/responseHandler');
 const getPopular = async(req, res) =>{
 	try{
 		const route = 'popular';
-		let {location, page, limit} = req.query;
+		let {idLocation, page, limit} = req.query;
 		let validate = {page, limit};
 		const url = dinamisUrl(req.query);
 		let err = helper.validationInt(validate);
 		if (err.length <= 0){
-			location = location || '';
+			idLocation = idLocation || '';
 			page = parseInt(page) || 1;
 			limit = parseInt(limit) || 4;
 			let offset = (page - 1) * limit;
-			let data = {location, limit, offset};
+			let data = {idLocation, limit, offset};
 			const results = await popularModel.getPopularAsync(data);
 			if(results.length > 0){
 				const final = await popularModel.countPopularAsync(data);
 				let {total} = final[0];
-				response(res,'List Popular', results, {total, page, limit,route, url});
+				const _pageInfo = pageInfo(total, limit, page, url, route);
+				return responseHandler(res,200, 'Popular vehicle', results, null, _pageInfo);
 			} else {
-				response(res, 'Data not found', null, null, 404);
-			
+				return responseHandler(res, 404, 'Data not found');
 			}
 		} else {
-			response(res,'Bad request',err, null, 400);
+			return responseHandler(res, 400, 'Bad request', null, err);
 		}
 	} catch (err){
-		response(res, 'Unexpected error', err, null, 500);
+		return responseHandler( res, 500, 'Unexpected error', null, err);
 	}
 };
 
