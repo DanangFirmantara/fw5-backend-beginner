@@ -15,7 +15,12 @@ exports.responseHandler = (res, status = 200, message = null, data = null, error
 		jsonRes.pageInfo = pageInfo;
 	}
 	if (data) {
-		jsonRes.results = data;
+		if(data.length === 1){
+			jsonRes.results = data[0];
+		} else{
+			jsonRes.results = data;
+		}
+		
 	}
 	if (error) {
 		jsonRes.error = error;

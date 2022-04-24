@@ -207,5 +207,18 @@ const patchVehicle = async(req,res) =>{
 	}
 };
 
+const getVehicleDetail = async(req, res)=>{
+	try{
+		const {id} = req.params;
+		const vehicle = await vehicleModel.getVehicleDetail(id);
+		if(vehicle.length === 0){
+			return responseHandler(res, 404, 'Data not found');
+		}
+		return responseHandler(res, 200, 'Detail vehicle', vehicle);
+	} catch(err){
+		return responseHandler(res, 500, 'Unexpected error', null, err);
+	}
+};
 
-module.exports = {getVehicles, deleteVehicle, postVehicle, patchVehicle};
+
+module.exports = {getVehicles, deleteVehicle, postVehicle, patchVehicle, getVehicleDetail};
