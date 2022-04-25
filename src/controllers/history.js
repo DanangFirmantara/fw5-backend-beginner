@@ -212,7 +212,7 @@ const finishPayment = async(req, res)=>{
 		}
 		await historyModel.finishPayment(codePayment);
 		const result = await historyModel.getHistoryAsync(id);
-		return response(res, 'Payment Success !', result, null, 200);
+		return responseHandler(res, 200, 'Payment success!', result);
 	} catch(err){
 		return response(res, 'Unexpected error', err, null, 500);
 	}

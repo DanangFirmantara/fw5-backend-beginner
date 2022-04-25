@@ -50,7 +50,7 @@ exports.getHistory = (id, cb) =>{
 };
 
 exports.getHistoryAsync = (id) => new Promise((resolve, reject)=>{
-	db.query('SELECT * FROM histories WHERE id = ?', [id], (err,res) =>{
+	db.query('SELECT h.id, h.rentStartDate, h.rentEndDate, h.quantity, h.codePayment, h.total, r.idCard, r.name, r.lastName, h.createdAt, r.contact, r.email, r.payment, r.bookedCode, v.name AS vehicleName, v.image, c.name AS vehicleCategory, l.name AS vehicleLocation  FROM histories h LEFT JOIN reservation r ON h.idReservation = r.id LEFT JOIN vehicles v ON h.vehicleId = v.id LEFT JOIN category c ON v.idCategory = c.id LEFT JOIN location l ON v.idLocation = l.id WHERE h.id = ?', [id], (err,res) =>{
 		if (err) reject(err);
 		resolve(res);
 	});
