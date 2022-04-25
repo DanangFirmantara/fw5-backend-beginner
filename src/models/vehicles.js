@@ -47,7 +47,7 @@ exports.getVehicleAsyn = (id) => new Promise((resolve, reject) =>{
 });
 
 exports.getVehicleDetail = (id) => new Promise((resolve, reject)=>{
-	db.query ('SELECT v.id AS id, v.idCategory, v.name, v.price, v.description, v.status, v.idLocation, v.stock, l.name AS location, image FROM vehicles v LEFT JOIN location l ON v.idLocation = l.id WHERE v.id = ?', [id],(err,res) =>{
+	db.query ('SELECT v.id AS id, v.idCategory, c.name AS category, v.name, v.price, v.description, v.status, v.idLocation, v.stock, l.name AS location, image FROM vehicles v LEFT JOIN location l ON v.idLocation = l.id LEFT JOIN category c ON v.idCategory = c.id WHERE v.id = ?', [id],(err,res) =>{
 		if (err) reject(err);
 		resolve(res);
 	});

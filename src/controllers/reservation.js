@@ -1,5 +1,5 @@
 const { booked } = require('../helpers/bookedCode');
-const { response } = require('../helpers/response');
+const { responseHandler } = require('../helpers/responseHandler');
 const reservationModel = require('../models/reservation');
 
 exports.postReservation = async(req, res)=>{
@@ -9,8 +9,8 @@ exports.postReservation = async(req, res)=>{
 		const data = {idCard, name, lastName, contact, email, payment, bookedCode};
 		const reservation = await reservationModel.postReservation(data);
 		const result = await reservationModel.getReservation(reservation.insertId);
-		return response(res, 'reservation added', result, null, 200);
+		return responseHandler(res, 200, 'Reservation created', result);
 	} catch(err){
-		console.log(err);
+		return responseHandler( res, 500, 'Unexpected error', null, err);
 	}
 };

@@ -107,27 +107,24 @@ const postHistory = async(req, res) =>{
 						}
 						const results = await historyModel.postHistoryAsync(data);
 						const final = await historyModel.getHistoryAsync(results.insertId);
-						response(res, 'Inserted history successfully', final);
+						return responseHandler(res, 200, 'Inserted history successfully', final );
 					} else if (resultV[0].stock > 0) {
-						response(res, `Sorry our stock just ${resultV[0].stock} left`, null, null, 400);
+						return responseHandler(res, 400, `Sorry our stock just ${resultV[0].stock} left`);
 					} else {
-						response(res, 'Vehicle full booked', null, null, 400);
+						return responseHandler(res, 400, 'Vehicle full booked');
 					}
 				} else {
-					response(res, 'Data vehicleId not found',null,null,404);
+					return responseHandler(res, 404, 'Data not found');
 				}
 			} else {
-				return res.status(404).send({
-					success : false,
-					message : 'Data userId not found'
-				});
+				return responseHandler(res, 404, 'Data userId not found');
 			}
 	
 		} else {
-			response(res, 'Bad request', err, null, 400);
+			return responseHandler(res, 400, 'Bad request');
 		}
 	} catch (err){
-		response(res,'Unexpected error', err, null, 500);
+		return responseHandler(res, 500, 'Unexpected error', null, err);
 	}
 	
 };
