@@ -464,6 +464,70 @@
 					"response": []
 				},
 				{
+					"name": "HISTORY USER",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/history/user",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"history",
+								"user"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "sortType",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DETAIL HISTORY",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/history/:id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"history",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "74"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "INSERT HISTORY",
 					"request": {
 						"method": "POST",
@@ -563,46 +627,6 @@
 								{
 									"key": "id",
 									"value": "75"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "HISTORY USER",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURL}}/history/user",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"history",
-								"user"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "3",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "100",
-									"disabled": true
-								},
-								{
-									"key": "orderBy",
-									"value": "",
-									"disabled": true
-								},
-								{
-									"key": "sortType",
-									"value": "",
-									"disabled": true
 								}
 							]
 						}

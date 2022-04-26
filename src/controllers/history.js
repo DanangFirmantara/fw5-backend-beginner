@@ -41,28 +41,31 @@ const getHistory = async(req, res) =>{
 
 const getHistoryUser = async(req, res)=>{
 	try{
+		console.log('kok gini');
 		let {page, limit, orderBy, sortType} = req.query;
 		let userId = req.userData.id;
 		let validate = {page, limit};
 		let err = helper.validationInt(validate);
 		const url = dinamisUrl(req.query);
-		if(err.length == 0){
-			userId = userId|| 0;
+		console.log(req.userData);
+		if(err.length === 0){
+			userId = userId || 0;
 			page = parseInt(page) || 1;
 			limit = limit || 5;
 			sortType = sortType || 'ASC';
 			orderBy = orderBy || 'vehicleId';
 			const offset = ( page - 1 ) * limit; 
 			const data = {offset, limit, orderBy, userId, sortType};
+			console.log(data);
 			const results = await historyModel.getHistoryUserAsync(data);
-			if(results.length > 0){
+			if(results.length !== 0){
 				const count = await historyModel.countHistoryUserAsync(data);
 				const {total} = count[0];
 				const route = 'vehicles';
 				const _pageInfo = pageInfo(total,limit, page, url, route);
 				return responseHandler(res, 200, 'List vehicles', results,null, _pageInfo );
 			} else {
-				return responseHandler(res, 404, 'Data not found');
+				return responseHandler(res, 404, 'Data not found cekk bro');
 			}
 		} else{
 			return responseHandler(res, 400,'Bad request',null, err);
@@ -218,4 +221,17 @@ const finishPayment = async(req, res)=>{
 	}
 };
 
-module.exports = {getHistory, getHistoryUser, postHistory, deleteHistory, patchHistory, finishPayment};
+const getHistoryById = async(req,res) =>{
+	try{
+		const {id} = req.params;
+		const history = await historyModel.getHistoryAsync(id);
+		if(history.length === 0){
+			return responseHandler(res, 404, 'Data not found');
+		}
+		return responseHandler(res, 200, 'Detail history', history);
+	} catch(err){
+		return responseHandler(res, 500, 'Unexpected error', null, err);
+	}
+};
+
+module.exports = {getHistory, getHistoryUser, postHistory, deleteHistory, patchHistory, finishPayment, getHistoryById};
