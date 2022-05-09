@@ -43,7 +43,7 @@ exports.getUserAsync = (id)=> new Promise((resolve, reject)=>{
 });
 
 exports.getUserAsyn = (id) => new Promise((resolve, reject) =>{
-	db.query ('SELECT id, email, username, contact, fullName, gender, address, displayName, birthDate, image FROM users WHERE id=?',[id], (err, res) =>{
+	db.query ('SELECT id, email, username, contact, fullName, gender, address, displayName, birthDate, image, isVerify FROM users WHERE id=?',[id], (err, res) =>{
 		if (err) reject(err);
 		resolve(res);
 	});
@@ -121,6 +121,27 @@ exports.getUserByEmailAsync = (email) =>new Promise((resolve, reject)=>{
 
 exports.getUserRole = (id) => new Promise((resolve, reject) =>{
 	db.query('SELECT role from users WHERE id = ?', [id], (err, res)=>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});
+
+exports.updateVerifyCode = (id, otp) => new Promise((resolve, reject)=>{
+	db.query('UPDATE users SET verifyCode = ? WHERE id = ?', [otp, id], (err,res)=>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});
+
+exports.getVerifyCode = (id) => new Promise((resolve, reject) =>{
+	db.query('SELECT id, verifyCode FROM users WHERE id = ?', [id], (err,res)=>{
+		if(err) reject(err);
+		resolve(res);
+	});
+});
+
+exports.verifyUser = (id) => new Promise((resolve, reject) =>{
+	db.query('UPDATE users SET isVerify = 1 WHERE id = ?', [id], (err, res)=>{
 		if(err) reject(err);
 		resolve(res);
 	});

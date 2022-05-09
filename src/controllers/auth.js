@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const {APP_SECRET, APP_EMAIL, APP_FRONTEND_URL} = process.env;
 const userModel = require('../models/users');
 const mail = require('../helpers/mail');
+const { responseHandler } = require('../helpers/responseHandler');
+const { code } = require('../helpers/bookedCode');
 
 
 exports.login = async(req, res) =>{
@@ -107,4 +109,52 @@ exports.forgotRequest = async(req, res)=>{
 		return response(res, err.message, null,null,500);
 	}
 	
+};
+
+exports.userVerify = async(req, res)=>{
+	try{
+		const {id} = req.userData;
+		const {otp} = req.body;
+		const user = await userModel.getVerifyCode(id);
+		if(user.length === 0) {
+			return responseHandler(res, 404, 'Data not found' );
+		}
+		if(user[0].verifyCode !== parseInt(otp)){
+			return responseHandler(res, 400, 'Cek your otp');
+		}
+		await userModel.verifyUser(id);
+		const userUpdate = await userModel.getUserAsyn(id);
+		return responseHandler(res, 200, 'User verified', userUpdate);
+	} catch(err){
+		return responseHandler(res, 500, 'Unexpected error', null, err);
+	}
+};
+
+exports.requestVerify = async(req, res) =>{
+	try{
+		const {id} = req.userData;
+		console.log(id);
+		const user = await userModel.getUserAsyn(id);
+		console.log(user[0]);
+		if(user.length === 0){
+			return responseHandler(res, 404, 'data not found');
+		}
+		const otp = code();
+		console.log(otp);
+		const updateUser = await userModel.updateVerifyCode(id, otp);
+		if(updateUser.affectedRows >= 1){
+			const info = await mail.sendMail({
+				from: APP_EMAIL,
+				to: user[0].email,
+				subject: 'Verify your account | Backend Beginner',
+				text: String(otp),
+				html : ` your code OTP is <b>${otp}</b> click <a href='${APP_FRONTEND_URL}/verifyAccount'>link</a> to verify your account`
+			});
+			return responseHandler(res, 200, 'Code has been sent to your email');
+		} else{
+			return responseHandler(res, 500, 'unexpected error');
+		}
+	} catch(err){
+		return responseHandler(res, 500, 'Unexpected error' );
+	}
 };

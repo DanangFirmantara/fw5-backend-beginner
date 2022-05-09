@@ -432,7 +432,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}/history?orderBy=userId&sortType=DESC",
+							"raw": "{{baseURL}}/history",
 							"host": [
 								"{{baseURL}}"
 							],
@@ -452,11 +452,13 @@
 								},
 								{
 									"key": "orderBy",
-									"value": "userId"
+									"value": "userId",
+									"disabled": true
 								},
 								{
 									"key": "sortType",
-									"value": "DESC"
+									"value": "DESC",
+									"disabled": true
 								}
 							]
 						}
@@ -480,7 +482,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "3",
+									"value": "1",
 									"disabled": true
 								},
 								{
@@ -520,7 +522,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "74"
+									"value": "85"
 								}
 							]
 						}
@@ -960,6 +962,52 @@
 									"value": "",
 									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VERIFY USER",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "otp",
+									"value": "769321",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/verify",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REQUEST VERIFY",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/auth/requestVerify",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"requestVerify"
 							]
 						}
 					},

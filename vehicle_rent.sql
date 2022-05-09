@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 26 Apr 2022 pada 21.04
+-- Waktu pembuatan: 09 Bulan Mei 2022 pada 10.34
 -- Versi server: 10.4.24-MariaDB
 -- Versi PHP: 7.4.28
 
@@ -250,6 +250,8 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(80) NOT NULL,
   `role` enum('Admin','User') NOT NULL DEFAULT 'User',
+  `isVerify` tinyint(4) NOT NULL DEFAULT 0,
+  `verifyCode` int(6) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
   `password` varchar(80) NOT NULL,
@@ -267,21 +269,21 @@ CREATE TABLE `users` (
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `role`, `email`, `contact`, `password`, `fullName`, `gender`, `address`, `displayName`, `birthDate`, `image`, `createdAt`, `updatedAt`) VALUES
-(85, 'hamdi', 'User', 'hamdi@gmail.com', '082398767584', '$2b$10$1a87N11JZJx.C73VidOfNOjqXkFZMo3Lbwlqhc1Ksja3rUQCqLZja', NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-13 01:28:26', '2022-02-14 00:06:48'),
-(86, 'asgigih', 'User', 'gigih@gmail.com', '087627361711', '$2b$10$jUW5O1vum8NfHIjR5sUp4OB8OcxjMzTNHuQdnYRW9J8HcwC2AgsmK', NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-13 01:29:19', NULL),
-(88, 'danang', 'User', 'danang@gmail.com', '082138321234', '$2b$10$FgsIgBOQPOeVTHyVISYrzONjX2cjlrBeMSrdal2wKN9fAEksbs0c6', 'Danang Firmantara', 'Male', 'Padang', 'Danang', '1999-05-09', 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1650998347/backendBeginner/uploads/users/users-1650998338059.png', '2022-02-13 01:32:21', '2022-04-27 01:40:21'),
-(91, 'admin', 'Admin', 'bevad56184@ishop2k.com', '081237844675', '$2b$10$wCIQq83SEkqqmm6fNusboOhFp7PX.9JSqtn.dNJoGpIcDCBCVfxs2', NULL, 'Male', 'bandung', 'Admin', '1999-02-15', NULL, '2022-03-01 19:26:31', '2022-04-13 14:34:42'),
-(95, 'dinda', 'User', 'dinda@gmail.com', NULL, '$2b$10$Xn56FWUmDwTZqBP5nIJjveO/oRoNE.UkEn9hKOg5llCyWlQpQjAHO', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 11:57:42', NULL),
-(96, 'fajri', 'User', 'fajri@mail.com', '087898439385', '$2b$10$5G8U4okEmILCDAJUHEQ1q.MXuvNMOYZv6QadGp1XBPOURjZ7dGQdC', 'Fajri Azyumardi Tara', 'Male', 'Padang', NULL, NULL, NULL, '2022-03-05 13:08:36', '2022-03-08 01:21:38'),
-(97, 'putri', 'User', 'putri@mail.com', NULL, '$2b$10$HggkoXlyvl4wJztX8A34KOgqiixndj0hpkgXeZo771D4t3jiKuAY2', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 13:25:36', NULL),
-(98, 'joni', 'User', 'joni@mail.com', NULL, '$2b$10$cSZ8MVqdmdTbBNDwymlSYenSh8TrNYbobRM4Ut7MmKI4FuaEkwHHy', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 13:31:49', NULL),
-(99, 'raka', 'User', 'vesewo4643@ketchet.com', '081231237522', '$2b$10$kBUhW9KFenImIZWUo2zPFeKNAS4Fe8/bOcpJqeWpBEJX0f1KsS11G', 'raka ', NULL, NULL, 'Raka Muhfi', NULL, NULL, '2022-03-07 14:39:04', '2022-03-08 11:37:07'),
-(100, 'andi', 'User', 'andi@mail.com', NULL, '$2b$10$XVLYt3S5LlPosocKFh.gR.zt3LOKn4iLRNEKeCuPyueBsKfLqkdJq', 'Andi Renaldi', NULL, NULL, 'Andi Renaldi Noviaz', NULL, NULL, '2022-03-07 14:39:54', '2022-03-07 18:14:16'),
-(101, 'muhfi', 'User', 'muhfi@mail.com', NULL, '$2b$10$GtY7Hx84s9l4nbMPQ.FeB.werG3xaMrR7q8p9qh31iJ9Ws70usxKq', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-07 14:44:14', NULL),
-(102, 'danang12', 'User', 'danang12@mail.com', NULL, '$2b$10$K94sLr63slJwWPYarFkdGeaNPROT9B1gbfK1wBzW.Do2LixJKddC6', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-08 11:29:34', NULL),
-(103, 'danang837', 'User', 'danang12@gmail.com', NULL, '$2b$10$QTBbT0pfLtf3wKsRtZTrw.8pBMHOJY4TrVJyB8bWbN77sjsrDRydC', NULL, NULL, NULL, NULL, NULL, NULL, '2022-04-19 23:17:57', NULL),
-(106, 'wehomik', 'User', 'wehomik837@gmail.com', NULL, '$2b$10$OmKklnbIDz0sdm/GsnEqM.D8UnweuXdxzaf3OcnT/VvAYZYvtquv6', NULL, NULL, NULL, NULL, NULL, NULL, '2022-04-23 17:07:41', NULL);
+INSERT INTO `users` (`id`, `username`, `role`, `isVerify`, `verifyCode`, `email`, `contact`, `password`, `fullName`, `gender`, `address`, `displayName`, `birthDate`, `image`, `createdAt`, `updatedAt`) VALUES
+(85, 'hamdi', 'User', 0, NULL, 'hamdi@gmail.com', '082398767584', '$2b$10$1a87N11JZJx.C73VidOfNOjqXkFZMo3Lbwlqhc1Ksja3rUQCqLZja', NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-13 01:28:26', '2022-02-14 00:06:48'),
+(86, 'asgigih', 'User', 0, NULL, 'gigih@gmail.com', '087627361711', '$2b$10$jUW5O1vum8NfHIjR5sUp4OB8OcxjMzTNHuQdnYRW9J8HcwC2AgsmK', NULL, NULL, NULL, NULL, NULL, NULL, '2022-02-13 01:29:19', NULL),
+(88, 'danang', 'User', 1, 769321, 'danangfirmantara837@gmail.com', '082138321234', '$2b$10$FgsIgBOQPOeVTHyVISYrzONjX2cjlrBeMSrdal2wKN9fAEksbs0c6', 'Danang Firmantara', 'Male', 'Padang', 'Danang', '1999-05-09', 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1650998347/backendBeginner/uploads/users/users-1650998338059.png', '2022-02-13 01:32:21', '2022-05-09 15:26:41'),
+(91, 'admin', 'Admin', 0, NULL, 'bevad56184@ishop2k.com', '081237844675', '$2b$10$wCIQq83SEkqqmm6fNusboOhFp7PX.9JSqtn.dNJoGpIcDCBCVfxs2', NULL, 'Male', 'bandung', 'Admin', '1999-02-15', NULL, '2022-03-01 19:26:31', '2022-04-13 14:34:42'),
+(95, 'dinda', 'User', 0, NULL, 'dinda@gmail.com', NULL, '$2b$10$Xn56FWUmDwTZqBP5nIJjveO/oRoNE.UkEn9hKOg5llCyWlQpQjAHO', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 11:57:42', NULL),
+(96, 'fajri', 'User', 0, NULL, 'fajri@mail.com', '087898439385', '$2b$10$5G8U4okEmILCDAJUHEQ1q.MXuvNMOYZv6QadGp1XBPOURjZ7dGQdC', 'Fajri Azyumardi Tara', 'Male', 'Padang', NULL, NULL, NULL, '2022-03-05 13:08:36', '2022-03-08 01:21:38'),
+(97, 'putri', 'User', 0, NULL, 'putri@mail.com', NULL, '$2b$10$HggkoXlyvl4wJztX8A34KOgqiixndj0hpkgXeZo771D4t3jiKuAY2', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 13:25:36', NULL),
+(98, 'joni', 'User', 0, NULL, 'joni@mail.com', NULL, '$2b$10$cSZ8MVqdmdTbBNDwymlSYenSh8TrNYbobRM4Ut7MmKI4FuaEkwHHy', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-05 13:31:49', NULL),
+(99, 'raka', 'User', 0, NULL, 'vesewo4643@ketchet.com', '081231237522', '$2b$10$kBUhW9KFenImIZWUo2zPFeKNAS4Fe8/bOcpJqeWpBEJX0f1KsS11G', 'raka ', NULL, NULL, 'Raka Muhfi', NULL, NULL, '2022-03-07 14:39:04', '2022-03-08 11:37:07'),
+(100, 'andi', 'User', 0, NULL, 'andi@mail.com', NULL, '$2b$10$XVLYt3S5LlPosocKFh.gR.zt3LOKn4iLRNEKeCuPyueBsKfLqkdJq', 'Andi Renaldi', NULL, NULL, 'Andi Renaldi Noviaz', NULL, NULL, '2022-03-07 14:39:54', '2022-03-07 18:14:16'),
+(101, 'muhfi', 'User', 0, NULL, 'muhfi@mail.com', NULL, '$2b$10$GtY7Hx84s9l4nbMPQ.FeB.werG3xaMrR7q8p9qh31iJ9Ws70usxKq', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-07 14:44:14', NULL),
+(102, 'danang12', 'User', 0, NULL, 'danang12@mail.com', NULL, '$2b$10$K94sLr63slJwWPYarFkdGeaNPROT9B1gbfK1wBzW.Do2LixJKddC6', NULL, NULL, NULL, NULL, NULL, NULL, '2022-03-08 11:29:34', NULL),
+(103, 'danang837', 'User', 0, NULL, 'danang12@gmail.com', NULL, '$2b$10$QTBbT0pfLtf3wKsRtZTrw.8pBMHOJY4TrVJyB8bWbN77sjsrDRydC', NULL, NULL, NULL, NULL, NULL, NULL, '2022-04-19 23:17:57', NULL),
+(106, 'wehomik', 'User', 0, NULL, 'wehomik837@gmail.com', NULL, '$2b$10$OmKklnbIDz0sdm/GsnEqM.D8UnweuXdxzaf3OcnT/VvAYZYvtquv6', NULL, NULL, NULL, NULL, NULL, NULL, '2022-04-23 17:07:41', NULL);
 
 -- --------------------------------------------------------
 
@@ -333,7 +335,12 @@ INSERT INTO `vehicles` (`id`, `idCategory`, `name`, `idLocation`, `description`,
 (74, 1, 'Truck', 1, 'Asd', 500000, 'Available', 5, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1650030827/backendBeginner/uploads/vehicles/vehicles-1650030815308.png', '2022-04-15 20:53:45', NULL),
 (75, 1, 'Mobilio', 1, 'you can pick 4 person', 300000, 'Full Booked', 0, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1650031013/backendBeginner/uploads/vehicles/vehicles-1650031005404.png', '2022-04-15 20:56:52', NULL),
 (76, 1, 'Truck 2', 1, 'asd', 500000, 'Available', 3, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1650031253/backendBeginner/uploads/vehicles/vehicles-1650031236758.png', '2022-04-15 21:00:52', NULL),
-(77, 1, 'Truck 3', 1, 'you can pick your family with this truck', 500000, 'Available', 1, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1650032939/backendBeginner/uploads/vehicles/vehicles-1650032933226.png', '2022-04-15 21:28:58', NULL);
+(77, 1, 'Truck 3', 1, 'you can pick your family with this truck', 500000, 'Available', 1, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1650032939/backendBeginner/uploads/vehicles/vehicles-1650032933226.png', '2022-04-15 21:28:58', NULL),
+(84, 3, 'bmx 1265', 1, 'Only for 1 person', 50000, 'Available', 2, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1652022762/backendBeginner/uploads/vehicles/vehicles-1652022748663.png', '2022-05-08 22:12:35', NULL),
+(85, 3, 'Bmx 1254', 1, NULL, 50000, 'Available', 1, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1652023373/backendBeginner/uploads/vehicles/vehicles-1652023361298.png', '2022-05-08 22:22:46', NULL),
+(86, 3, 'bmx 12312', 1, 'Only for 1 person', 50000, 'Available', 1, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1652023782/backendBeginner/uploads/vehicles/vehicles-1652023769642.png', '2022-05-08 22:29:35', NULL),
+(87, 3, 'bmx 222', 1, 'Only for 1 person', 50000, 'Available', 2, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1652024366/backendBeginner/uploads/vehicles/vehicles-1652024351430.png', '2022-05-08 22:39:19', NULL),
+(88, 3, 'bmx 232', 2, 'Only for 1 person', 50000, 'Available', 2, 'https://res.cloudinary.com/dwvnlxymb/image/upload/v1652024930/backendBeginner/uploads/vehicles/vehicles-1652024918457.png', '2022-05-08 22:48:43', NULL);
 
 --
 -- Indexes for dumped tables
@@ -432,7 +439,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `vehicles`
 --
 ALTER TABLE `vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
